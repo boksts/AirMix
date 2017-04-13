@@ -24,7 +24,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.pb = new System.Windows.Forms.PictureBox();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.bgw = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.pb)).BeginInit();
             this.SuspendLayout();
             // 
@@ -35,7 +35,6 @@
             this.pb.Size = new System.Drawing.Size(169, 182);
             this.pb.TabIndex = 0;
             this.pb.TabStop = false;
-
             // 
             // GraphicsForm
             // 
@@ -55,7 +54,7 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pb;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.ComponentModel.BackgroundWorker bgw;
 
 
 

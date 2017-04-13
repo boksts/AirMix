@@ -40,7 +40,8 @@ namespace AirMix {
         public double SizeY { get; set; }
 
         public Form1() {
-            InitializeComponent();          
+            InitializeComponent();
+            pbImage.Image = Image.FromFile("Image.jpg");
         }
 
         private void Init() {
@@ -64,9 +65,7 @@ namespace AirMix {
             var initialValues = new InitialValues();
             initialValues.Set(_UxMax: Convert.ToDouble(tbUxMax.Text), _UyMax: Convert.ToDouble(tbUyMax.Text));
 
-            grForm = new GraphicsForm(X, Y, scale: scale);
-            outForm = new OutputForm {X = X, Y = Y};
-
+            //расчет в системе "давление - скорость"
             if (rbPU.Checked) {
                 //выбор метода расчета поля давления
                 pressureCalcMethod = (rbWeakCompress.Checked)
@@ -81,6 +80,7 @@ namespace AirMix {
                 pu = new PU(tau, nuM, ro);
             }
 
+            //расчет в системе "вихрь -функция тока"
             if (rbWPsi.Checked) {
                 //выбор метода решения уравнения Гельмгольца
                 helmholtzCalcMethod = (rbHelmEquExpScheme.Checked)
@@ -101,44 +101,111 @@ namespace AirMix {
         }
 
 
-        private void Calculation() {
-            Init();
+        private void Calculation(object sender, DoWorkEventArgs e) {
+            BackgroundWorker bw = sender as BackgroundWorker;
+            double t = 0;         
 
-            //вывод скоростей графическом виде
-            if (cbGraphics.Checked) 
-                grForm.Show();
-
-            double t = 0;
-            bool error = false;
             do {
-                t += tau;
-               
+                t += tau;   
+                //состояние расчета
+                bw.ReportProgress((int)(t / tmax * 100));
+                //если произведена отмена
+                if (bw.CancellationPending) {
+                    e.Cancel = true;
+                    return;
+                }
+                //расчет в системе "давление - скорость"
                 if (rbPU.Checked)
                     pu.Calculation(pressureCalcMethod, navierStokesCalcMethod, turbulenceModel);
                 
+                //расчет в системе "вихрь - функция тока"
                 if (rbWPsi.Checked)
                     w_psi.Calculation(helmholtzCalcMethod, turbulenceModel);
 
-                if (cbGraphics.Checked)
-                    error = grForm.DrawDisplay(Ux, Uy, x0, len);
+                if (cbGraphics.Checked) 
+                    Thread.Sleep(10);
 
-                if (error)
-                    return;
             } while (t <= tmax);
+          
+        }
 
-            //вывод скоростей в текстовом виде
-            if (cbTextFile.Checked) {
-                outForm.Show();
-                outForm.OutSpeeds(Ux,Uy);
+        private void btnCalculate_Click(object sender, EventArgs e) {
+            btnCancel.Enabled = true;
+            btnCalculate.Enabled = false;
+   
+            //инициализация параметров расчета
+            Init();
+              
+            //вывод скоростей графическом виде       
+            if (cbGraphics.Checked) {
+                grForm = new GraphicsForm(X, Y, scale: scale);
+                grForm.Show();
+                grForm.Closing += grForm_Closing;
             }
 
+            //запуск расчета в отдельном потоке
+            bgw.RunWorkerAsync();
+            bool error;
+            //пока идет расчет
+            while (bgw.IsBusy) {
+                //вывод графики
+                if (cbGraphics.Checked) {
+                    error = grForm.DrawDisplay(Ux, Uy, x0, len);
+                    if (error)
+                        bgw.CancelAsync();               
+                }
+                Application.DoEvents();
+            }
 
+            //вывод результатов  в текстовом виде      
+            if (cbTextFile.Checked) {
+                outForm = new OutputForm {X = X, Y = Y};
+                outForm.Show();
+                outForm.OutSpeeds(Ux, Uy);
+            }
         }
 
-        private  void btnCalculate_Click(object sender, EventArgs e) {
-            Calculation();
+        //метод при закрытии формы с графикой
+        void grForm_Closing(object sender, CancelEventArgs e) {
+            if (bgw.IsBusy)
+                switch (MessageBox.Show("Прекратить расчет и закрыть форму?", "", MessageBoxButtons.YesNo)) {
+                    case DialogResult.Yes: {
+                        bgw.CancelAsync();
+                        break;
+                    }
+
+                    case DialogResult.No:
+                        e.Cancel = true;
+                        break;
+                }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e) {
+            bgw.CancelAsync();
+        }
+
+
+        //-----------BackgroundWorker---------------------------------
+        private void bgw_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            pgb.Value = e.ProgressPercentage;
+            lblPrc.Text = "Расчет выполнен на " + pgb.Value + "%";
             
         }
+
+        private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            string str = e.Cancelled ? "Расчет отменен!" : "Расчет завершен!";
+            pgb.Value = 0;
+            btnCancel.Enabled = false;
+            btnCalculate.Enabled = true;
+            MessageBox.Show(str);
+
+        }
+
+        private void bgw_DoWork(object sender, DoWorkEventArgs e) {
+            Calculation(sender, e);
+        }
+        //===================================================================
+
 
         private void cbGraphics_CheckedChanged(object sender, EventArgs e) {
             nudScale.Enabled = cbGraphics.Checked;
@@ -157,8 +224,9 @@ namespace AirMix {
  
         }
 
+        private void pictureBox1_Click(object sender, EventArgs e) {
 
-
+        }
 
     }
 }
