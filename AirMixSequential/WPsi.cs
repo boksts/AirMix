@@ -4,29 +4,43 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AirMix.Calculation {
-    class W_Psi:Form1 {
+namespace AirMixSequential {
+    public class WPsi {
 
         const double epsPsi = 0.001;
-
         private readonly double nuM;
         private readonly double tau;
+        private readonly double h;
+        private readonly double tmax;
+        private readonly int X;
+        private readonly int Y;
+        private readonly int x0;
+        private readonly int len;
+
         private Turbulation turb;
+
         //функция тока
         private double[,] psi;
         //вихрь
         private double[,] w;
 
         private double[,] nuT;
+        private double[,] Ux;
+        private double[,] Uy;
 
         public enum HelmholtzCalcMethod {
             ExplicitScheme,//явная схема
             ImplicitScheme //неявная схема
         }
 
-        public W_Psi(double nuM, double tau) {
+        public WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y) {
             this.nuM = nuM;
             this.tau = tau;
+            this.h = h;
+            this.X = X;
+            this.Y = Y;
+            this.x0 = x0;
+            this.len = len;
             psi = new double[X, Y];
             w = new double[X, Y];  
             nuT = new double[X, Y];
@@ -35,12 +49,23 @@ namespace AirMix.Calculation {
             turb = new Turbulation(X, Y, h, tau, nuM); 
         }
 
-        public void Calculation(HelmholtzCalcMethod helmholtzCalcMethod, Turbulation.TurbulenceModel turbulenceModel) {
-            if (turbulenceModel != 0)//turbulenceModel == 0 если турбулентность не расчитывается
-                nuT = turb.Calculate(turbulenceModel, Ux, Uy);
-            Vortex();
-            CurrentFunction();
-            Speeds();
+        public void Calculation(HelmholtzCalcMethod helmholtzCalcMethod, TurbulenceModel turbulenceModel,
+            double[,] Ux, double[,] Uy, double tmax) {
+           
+            this.Ux = Ux;
+            this.Uy = Uy;
+
+            double t = 0;
+            do {
+                if (turbulenceModel != 0) //turbulenceModel == 0 если турбулентность не расчитывается
+                    nuT = turb.Calculate(turbulenceModel, Ux, Uy);
+
+                Vortex();
+                CurrentFunction();
+                Speeds();
+
+                t += tau;
+            } while (t <= tmax);
         }
 
         //начальные значения и граничные условия

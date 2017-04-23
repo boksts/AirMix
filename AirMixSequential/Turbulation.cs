@@ -4,7 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AirMix {
+namespace AirMixSequential {
+    public enum TurbulenceModel {
+        Secundova = 1, //Секундова модель
+        KE = 2 //К-Е модель
+    }
+
     class Turbulation {
         private const double Betta = 0.06;
         private const double Gamma = 50.0;
@@ -20,11 +25,6 @@ namespace AirMix {
         private double[,] nuTn; //турбулентная вязкость
         private double[,] nuT; //турбулентная вязкость
 
-
-        public enum TurbulenceModel {
-            Secundova = 1, //Секундова модель
-            KE = 2 //К-Е модель
-        }
 
         //вспомогательная функция для модели Секундова
         private double funcTurb(double z) {
@@ -52,7 +52,6 @@ namespace AirMix {
                 //на выходе cчитается по ходу расчета
             }
         }
-
 
         private void Secundova(double[,] Ux, double[,] Uy) {
             double D = 1.0;

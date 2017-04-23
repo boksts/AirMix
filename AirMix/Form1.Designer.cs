@@ -80,12 +80,12 @@ namespace AirMix {
             this.rbOpenMP = new System.Windows.Forms.RadioButton();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.rbCUDA = new System.Windows.Forms.RadioButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pgb = new System.Windows.Forms.ProgressBar();
             this.bgw = new System.ComponentModel.BackgroundWorker();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.lblPrc = new System.Windows.Forms.Label();
-            this.rbCUDA = new System.Windows.Forms.RadioButton();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
@@ -685,8 +685,17 @@ namespace AirMix {
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(850, 174);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Последовательные вычисления";
+            this.tabPage1.Text = "Основные вычисления";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // rbCUDA
+            // 
+            this.rbCUDA.Location = new System.Drawing.Point(368, 7);
+            this.rbCUDA.Name = "rbCUDA";
+            this.rbCUDA.Size = new System.Drawing.Size(67, 21);
+            this.rbCUDA.TabIndex = 8;
+            this.rbCUDA.Text = "CUDA";
+            this.rbCUDA.UseVisualStyleBackColor = true;
             // 
             // tabPage3
             // 
@@ -732,17 +741,6 @@ namespace AirMix {
             this.lblPrc.Size = new System.Drawing.Size(144, 17);
             this.lblPrc.TabIndex = 23;
             this.lblPrc.Text = "Расчет выполнен на";
-            // 
-            // rbCUDA
-            // 
-            this.rbCUDA.AutoSize = true;
-            this.rbCUDA.Enabled = false;
-            this.rbCUDA.Location = new System.Drawing.Point(368, 7);
-            this.rbCUDA.Name = "rbCUDA";
-            this.rbCUDA.Size = new System.Drawing.Size(67, 21);
-            this.rbCUDA.TabIndex = 8;
-            this.rbCUDA.Text = "CUDA";
-            this.rbCUDA.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 

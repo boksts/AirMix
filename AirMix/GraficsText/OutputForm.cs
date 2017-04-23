@@ -24,7 +24,7 @@ namespace AirMix.Grafics {
             this.Ux = Ux;
             this.Uy = Uy;
             OutSpeedsDisplay(Ux, rtbUx);
-            OutSpeedsDisplay(Uy, rtbUy);
+            OutSpeedsDisplay(Uy, rtbUy);         
         }
 
         //вывод значений скоростей на экран

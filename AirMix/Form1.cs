@@ -10,8 +10,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AirMix.Calculation;
 using AirMix.Grafics;
+
 
 namespace AirMix {
     public partial class Form1 : Form {
@@ -27,22 +27,28 @@ namespace AirMix {
         private double nuM;
         private double tmax;
         private int scale;
-        private PU pu;
-        private W_Psi w_psi;
+
+        private AirMixSequential.PU pu;
+        private AirMixSequential.WPsi wpsi;
+        private AirMixParallel.PU parPU;
+
         private GraphicsForm grForm;
         private OutputForm outForm;
-        private PU.PressureCalcMethod pressureCalcMethod;
-        private PU.NavierStokesCalcMethod navierStokesCalcMethod;
-        private W_Psi.HelmholtzCalcMethod helmholtzCalcMethod;
-        private Turbulation.TurbulenceModel turbulenceModel;
 
         public double SizeX { get; set; }
         public double SizeY { get; set; }
+
+        object pressureCalcMethod;
+        object navierStokesCalcMethod;
+
+        object helmholtzCalcMethod;
+        object turbulenceModel;
 
         public Form1() {
             InitializeComponent();
             pbImage.Image = Image.FromFile("Image.jpg");
         }
+
 
         private void Init() {
             SizeX = Convert.ToDouble(tbWidth.Text);
@@ -65,69 +71,150 @@ namespace AirMix {
             var initialValues = new InitialValues();
             initialValues.Set(_UxMax: Convert.ToDouble(tbUxMax.Text), _UyMax: Convert.ToDouble(tbUyMax.Text));
 
+        }
+
+        private void InitSequential() {
+            Init();
+
             //расчет в системе "давление - скорость"
             if (rbPU.Checked) {
                 //выбор метода расчета поля давления
                 pressureCalcMethod = (rbWeakCompress.Checked)
-                    ? PU.PressureCalcMethod.WeakСompressibility
-                    : PU.PressureCalcMethod.Poisson;
+                    ? AirMixSequential.PU.PressureCalcMethod.WeakСompressibility
+                    : AirMixSequential.PU.PressureCalcMethod.Poisson;
 
                 //выбор метода решения уравнения Навье-Стокса
                 navierStokesCalcMethod = (rbNSEquExpScheme.Checked)
-                    ? PU.NavierStokesCalcMethod.ExplicitScheme
-                    : PU.NavierStokesCalcMethod.ImplicitScheme;
+                    ? AirMixSequential.PU.NavierStokesCalcMethod.ExplicitScheme
+                    : AirMixSequential.PU.NavierStokesCalcMethod.ImplicitScheme;
 
-                pu = new PU(tau, nuM, ro);
+                pu = new AirMixSequential.PU(tau, ro, nuM, x0, len, h, X, Y);
             }
 
             //расчет в системе "вихрь -функция тока"
             if (rbWPsi.Checked) {
                 //выбор метода решения уравнения Гельмгольца
                 helmholtzCalcMethod = (rbHelmEquExpScheme.Checked)
-                    ? W_Psi.HelmholtzCalcMethod.ExplicitScheme
-                    : W_Psi.HelmholtzCalcMethod.ImplicitScheme;
+                    ? AirMixSequential.WPsi.HelmholtzCalcMethod.ExplicitScheme
+                    : AirMixSequential.WPsi.HelmholtzCalcMethod.ImplicitScheme;
 
-                w_psi = new W_Psi(nuM,tau);
+                wpsi = new AirMixSequential.WPsi(tau, nuM, x0, len, h, X, Y);
             }
 
             //выбор модели турбулентности
             if (rbSecundova.Checked)
-                turbulenceModel = Turbulation.TurbulenceModel.Secundova;
+                turbulenceModel = AirMixSequential.TurbulenceModel.Secundova;
             if (rbKE.Checked)
-                turbulenceModel = Turbulation.TurbulenceModel.KE;
+                turbulenceModel = AirMixSequential.TurbulenceModel.KE;
             if (rbMissingTurb.Checked)
                 turbulenceModel = 0;
+        }
+
+        private void InitParallel() {
+            Init();       
+
+            //расчет в системе "давление - скорость"
+            if (rbPU.Checked) {
+                //выбор метода расчета поля давления
+                pressureCalcMethod = (rbWeakCompress.Checked)
+                    ? AirMixParallel.PU.PressureCalcMethod.WeakСompressibility
+                    : AirMixParallel.PU.PressureCalcMethod.Poisson;
+
+                //выбор метода решения уравнения Навье-Стокса
+                navierStokesCalcMethod = (rbNSEquExpScheme.Checked)
+                    ? AirMixParallel.PU.NavierStokesCalcMethod.ExplicitScheme
+                    : AirMixParallel.PU.NavierStokesCalcMethod.ImplicitScheme;
+
+                parPU = new AirMixParallel.PU(tau, ro, nuM, x0, len, h, X, Y, 0.0);
+            }
+
+            //расчет в системе "вихрь -функция тока"
+            if (rbWPsi.Checked) {
+              
+            }
 
         }
 
-
-        private void Calculation(object sender, DoWorkEventArgs e) {
+ 
+        private void CalculationSeq(object sender, DoWorkEventArgs e) {
             BackgroundWorker bw = sender as BackgroundWorker;
-            double t = 0;         
-
+            double t = 0;
+        
             do {
                 t += tau;   
                 //состояние расчета
                 bw.ReportProgress((int)(t / tmax * 100));
+                
                 //если произведена отмена
                 if (bw.CancellationPending) {
                     e.Cancel = true;
                     return;
                 }
+
                 //расчет в системе "давление - скорость"
                 if (rbPU.Checked)
-                    pu.Calculation(pressureCalcMethod, navierStokesCalcMethod, turbulenceModel);
-                
+                    pu.Calculation((AirMixSequential.PU.PressureCalcMethod) pressureCalcMethod,
+                        (AirMixSequential.PU.NavierStokesCalcMethod) navierStokesCalcMethod,
+                        (AirMixSequential.TurbulenceModel) turbulenceModel, Ux, Uy, 0.0);
+
                 //расчет в системе "вихрь - функция тока"
                 if (rbWPsi.Checked)
-                    w_psi.Calculation(helmholtzCalcMethod, turbulenceModel);
+                    wpsi.Calculation((AirMixSequential.WPsi.HelmholtzCalcMethod) helmholtzCalcMethod,
+                        (AirMixSequential.TurbulenceModel) turbulenceModel, Ux, Uy, 0.0);
 
-                if (cbGraphics.Checked) 
+                if (cbGraphics.Checked)
                     Thread.Sleep(10);
 
             } while (t <= tmax);
           
         }
+
+        private void CalculationCUDA(object sender, DoWorkEventArgs e) {
+            BackgroundWorker bw = sender as BackgroundWorker;
+            double t = 0;
+            double[] Uxx = new double[X * Y];
+            double[] Uyy = new double[X * Y];
+          
+
+            do {
+                for (int j = 0; j < Y; j++)
+                    for (int i = 0; i < X; i++) {
+                        Uxx[j * X + i] = Ux[i, j];
+                        Uyy[j * X + i] = Uy[i, j];
+                    }
+
+                t += tau;
+                //состояние расчета
+                bw.ReportProgress((int)(t / tmax * 100));
+
+                //если произведена отмена
+                if (bw.CancellationPending) {
+                    e.Cancel = true;
+                    return;
+                }
+
+                //расчет в системе "давление - скорость"
+                if (rbPU.Checked)
+                    parPU.CalcCUDA((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
+                        (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,Uxx, Uyy);
+
+                //расчет в системе "вихрь - функция тока"
+                if (rbWPsi.Checked)
+                
+
+                if (cbGraphics.Checked)
+                    Thread.Sleep(10);
+
+                for (int j = 0; j < Y; j++)
+                    for (int i = 0; i < X; i++) {
+                        Ux[i, j] = Uxx[j * X + i];
+                        Uy[i, j] = Uyy[j * X + i];
+                    }
+
+            } while (t <= tmax);
+
+        }
+
 
         private void btnCalculate_Click(object sender, EventArgs e) {
             btnCancel.Enabled = true;
@@ -135,7 +222,19 @@ namespace AirMix {
    
             //инициализация параметров расчета
             Init();
-              
+
+            if (rbSeq.Checked) {
+                InitSequential();
+            }
+
+            if (rbCUDA.Checked) {
+                InitParallel();
+            }
+
+
+            //запуск расчета в отдельном потоке
+            bgw.RunWorkerAsync();
+ 
             //вывод скоростей графическом виде       
             if (cbGraphics.Checked) {
                 grForm = new GraphicsForm(X, Y, scale: scale);
@@ -143,9 +242,8 @@ namespace AirMix {
                 grForm.Closing += grForm_Closing;
             }
 
-            //запуск расчета в отдельном потоке
-            bgw.RunWorkerAsync();
             bool error;
+
             //пока идет расчет
             while (bgw.IsBusy) {
                 //вывод графики
@@ -163,6 +261,8 @@ namespace AirMix {
                 outForm.Show();
                 outForm.OutSpeeds(Ux, Uy);
             }
+
+      
         }
 
         //метод при закрытии формы с графикой
@@ -202,7 +302,10 @@ namespace AirMix {
         }
 
         private void bgw_DoWork(object sender, DoWorkEventArgs e) {
-            Calculation(sender, e);
+            if (rbSeq.Checked)
+                 CalculationSeq(sender, e);
+            if (rbCUDA.Checked)
+                CalculationCUDA(sender, e);
         }
         //===================================================================
 
@@ -227,6 +330,7 @@ namespace AirMix {
         private void pictureBox1_Click(object sender, EventArgs e) {
 
         }
+
 
     }
 }

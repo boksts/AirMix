@@ -6,18 +6,29 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AirMix {
-    class PU : InitialValues {
+namespace AirMixSequential {      
+    
+    public class PU  {
         private readonly double tau;
         private readonly double nuM;
         private readonly double ro;
+        private readonly double h;
+        private readonly double tmax;
+        private readonly int X;
+        private readonly int Y;
+        private readonly int x0;
+        private readonly int len;
+
         private double[,] P;
-        private double[,] divU;
-        private Turbulation turb;
+        private double[,] divU;     
         private double[,] Uxn;
         private double[,] Uyn;
         private double[,] nuT;
+        private double[,] Ux;
+        private double[,] Uy;
 
+        private Turbulation turb;
+        
         public enum PressureCalcMethod {
             Poisson,//ур-е Пуассона
             WeakСompressibility //метод слабой сжимаемости
@@ -28,42 +39,56 @@ namespace AirMix {
             ImplicitScheme //неявная схема
         }
 
-
-        public PU(double tau, double nuM, double ro){
+        public PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y) {
             this.tau = tau;
             this.nuM = nuM;
             this.ro = ro;
+            this.h = h;
+            this.X = X;
+            this.Y = Y;
+            this.x0 = x0;
+            this.len = len;
+   
             P = new double[X, Y];
             divU = new double[X, Y];
             Uxn = new double[X, Y];
             Uyn = new double[X, Y];
             nuT = new double[X, Y];
+
             //начальное давление
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++) {
                     P[i, j] = 0.0;
                 }
-            turb = new Turbulation(X,Y,h,tau,nuM); 
-            
+
+            turb = new Turbulation(X,Y,h,tau,nuM);        
         }
 
 
         //общий расчет согласно модели "давление - скорость"
-        public void Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod,Turbulation.TurbulenceModel turbulenceModel) {
+        public void Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod,
+            TurbulenceModel turbulenceModel, double[,] Ux, double[,] Uy, double tmax) {
 
-            if (turbulenceModel != 0)//turbulenceModel == 0 если турбулентность не расчитывается
-               nuT = turb.Calculate(turbulenceModel, Ux, Uy);
+            this.Ux = Ux;
+            this.Uy = Uy;
 
-            switch (pressureMethod) {
-                case PressureCalcMethod.Poisson:
-                    Poisson();
-                    break;
-                case PressureCalcMethod.WeakСompressibility:
-                    WeakСompressibility();
-                    break;
-            }
+            double t = 0;
+            do {
+                if (turbulenceModel != 0) //turbulenceModel = 0 если турбулентность не расчитывается
+                    nuT = turb.Calculate(turbulenceModel, Ux, Uy);
 
-            Speeds();
+                switch (pressureMethod) {
+                    case PressureCalcMethod.Poisson:
+                        Poisson();
+                        break;
+                    case PressureCalcMethod.WeakСompressibility:
+                        WeakСompressibility();
+                        break;
+                }
+
+                Speeds();
+                t += tau;
+            } while (t <= tmax);
         }
 
         //расчет поля скоростей
