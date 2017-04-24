@@ -5,9 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AirMixSequential {
+    /// <summary>
+    /// Модель турбулентности
+    /// </summary>
     public enum TurbulenceModel {
-        Secundova = 1, //Секундова модель
-        KE = 2 //К-Е модель
+        ///<summary>Секундова модель</summary>
+        Secundova = 1,
+        ///<summary>К-Е модель</summary>
+        KE = 2 
     }
 
     class Turbulation {

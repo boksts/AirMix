@@ -28,11 +28,24 @@ namespace AirMixSequential {
         private double[,] Ux;
         private double[,] Uy;
 
+        /// <summary>
+        /// Схема расчета уравнения Гельмгольца
+        /// </summary>
         public enum HelmholtzCalcMethod {
-            ExplicitScheme,//явная схема
-            ImplicitScheme //неявная схема
+            ///<summary>явная схема</summary>
+            ExplicitScheme,
+            ///<summary>неявная схема</summary>
+            ImplicitScheme 
         }
 
+        ///<summary>Установка параметров расчета</summary>
+        /// <param name="tau">шаг по времени</param>
+        ///  <param name="nuM">молекулярная вязкость</param>
+        ///  <param name="x0">расположение отвестия снизу от точки х0...</param>
+        ///  <param name="len">...длиной len</param>
+        /// <param name="h">шаг по сетке</param>
+        /// <param name="X">число точек по оси Х</param>
+        ///  <param name="Y">число точек по оси У</param>
         public WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y) {
             this.nuM = nuM;
             this.tau = tau;
@@ -49,7 +62,13 @@ namespace AirMixSequential {
             turb = new Turbulation(X, Y, h, tau, nuM); 
         }
 
-        public void Calculation(HelmholtzCalcMethod helmholtzCalcMethod, TurbulenceModel turbulenceModel,
+        ///<summary>Расчет поля скоростей</summary>
+        /// <param name="hcm">схема расчета уравнения Гельмгольца</param>
+        ///  <param name="tm">модель турбулентности (turbulenceModel = 0 если турбулентность не расчитывается)</param>
+        ///  <param name="Ux">скорости Ux</param>
+        ///  <param name="Uy">скорости Uy</param>
+        /// <param name="tmax">время расчета</param>
+        public void Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm,
             double[,] Ux, double[,] Uy, double tmax) {
            
             this.Ux = Ux;
@@ -57,8 +76,8 @@ namespace AirMixSequential {
 
             double t = 0;
             do {
-                if (turbulenceModel != 0) //turbulenceModel == 0 если турбулентность не расчитывается
-                    nuT = turb.Calculate(turbulenceModel, Ux, Uy);
+                if (tm != 0) //turbulenceModel == 0 если турбулентность не расчитывается
+                    nuT = turb.Calculate(tm, Ux, Uy);
 
                 Vortex();
                 CurrentFunction();

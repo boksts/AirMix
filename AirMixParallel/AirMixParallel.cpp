@@ -4,18 +4,38 @@
 
 #include "AirMixParallel.h"
 
-AirMixParallel::PU::PU(double tau, double ro, double nuM, int  x0, int len, double h, int X, int Y, double tmax) {
+AirMixParallel::PU::PU(PPT _ppt, double tau, double ro, double nuM, int  x0, int len, double h, int X, int Y) {
 
 	this->X = X;
 	this->Y = Y;
+	ppt = _ppt;
 
-	computeOnOMP = new ComputeOnOMP::PU(tau, ro, nuM, x0, len, h, X, Y, tmax);
-	computeOnCUDA = new ComputeOnCUDA::PU(tau, ro, nuM, x0, len, h, X, Y, tmax);
+
+	switch (ppt) {
+	case PPT::OpenMP:
+		computeOnOMP = new ComputeOnOMP::PU(tau, ro, nuM, x0, len, h, X, Y);
+		break;
+	case PPT::CUDA:
+		computeOnCUDA = new ComputeOnCUDA::PU(tau, ro, nuM, x0, len, h, X, Y);
+		break;
+	}
+}
+
+AirMixParallel::PU::~PU() {
+	delete[] _Ux;
+	delete[] _Uy;
+	switch (ppt) {
+	case PPT::OpenMP:
+		computeOnOMP->~PU();
+		break;
+	case PPT::CUDA:
+		computeOnCUDA->~PU();
+		break;
+}
 
 }
 
-
-void AirMixParallel::PU::CalcOpenMP(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, array<double> ^Ux, array<double> ^Uy) {
+void AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax) {
 
 	this->Ux = Ux;
 	this->Uy = Uy;
@@ -27,26 +47,15 @@ void AirMixParallel::PU::CalcOpenMP(PressureCalcMethod pcm, NavierStokesCalcMeth
 	System::Runtime::InteropServices::Marshal::Copy(Ux, 0, (System::IntPtr)_Ux, X*Y);
 	System::Runtime::InteropServices::Marshal::Copy(Uy, 0, (System::IntPtr)_Uy, X*Y);
 
-	computeOnOMP->Calculation(static_cast<ComputeOnOMP::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnOMP::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy);
+	switch (ppt) {
+	case PPT::OpenMP:
+		computeOnOMP->Calculation(static_cast<ComputeOnOMP::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnOMP::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, tmax);
+		break;
+	case PPT::CUDA:
+		computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnCUDA::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, tmax);		break;
+		break;
+	}
 
-	//копирование результата из неуправляемого кода в управляемый
-	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Ux, Ux, 0, X*Y);
-	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Uy, Uy, 0, X*Y);
-
-}
-
-void AirMixParallel::PU::CalcCUDA(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, array<double> ^Ux, array<double> ^Uy) {
-	this->Ux = Ux;
-	this->Uy = Uy;
-
-	_Ux = new double[X*Y];
-	_Uy = new double[X*Y];
-
-	//копирование начальных данных из управляемого кода в неуправляемый
-	System::Runtime::InteropServices::Marshal::Copy(Ux, 0, (System::IntPtr)_Ux, X*Y);
-	System::Runtime::InteropServices::Marshal::Copy(Uy, 0, (System::IntPtr)_Uy, X*Y);
-
-	computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnCUDA::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy);
 
 	//копирование результата из неуправляемого кода в управляемый
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Ux, Ux, 0, X*Y);

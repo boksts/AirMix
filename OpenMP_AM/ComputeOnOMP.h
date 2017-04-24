@@ -1,10 +1,10 @@
 #pragma once
-
+#include  <iostream>
 
 class ComputeOnOMP {
 public:
 	class PU {
-	public:
+	private:
 	
 		int X, Y;
 		double *Ux,*Uy, *Uxn, *Uyn;
@@ -13,13 +13,13 @@ public:
 		double *divU;
 		double *P;
 		double ro;
-		double t = 0, tmax;
 		double h;
 		int x0, len;
-		const double nu = 1;
 		const double b = 100;
-
-
+		
+		
+	public:
+		FILE *f;
 		enum PressureCalcMethod {
 			Poisson,//ур-е Пуассона
 			WeakСompressibility //метод слабой сжимаемости
@@ -30,13 +30,14 @@ public:
 			ImplicitScheme //неявная схема
 		};
 
-		void Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy);
+		void Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax);
 		void _Poisson();
 		void _WeakСompressibility();
 		void Speeds();
 
-		PU(double tau, double ro, double nuM,int x0, int len, double h, int X, int Y, double tmax = 0.0);
-
+		PU(double tau, double ro, double nuM,int x0, int len, double h, int X, int Y);
+		~PU();
+			
 	};
 
 

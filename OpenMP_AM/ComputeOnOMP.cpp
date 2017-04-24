@@ -1,10 +1,10 @@
 
 #include <math.h>
-#include  <iostream>
+
 #include "ComputeOnOMP.h"
 
 
-ComputeOnOMP::PU::PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y, double tmax) {
+ComputeOnOMP::PU::PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y) {
 	this->tau = tau;
 	this->ro = ro;
 	this->nuM = nuM;
@@ -13,12 +13,12 @@ ComputeOnOMP::PU::PU(double tau, double ro, double nuM, int x0, int len, double 
 	this->h = h;
 	this->X = X;
 	this->Y = Y;
-	this->tmax = tmax;
 
 	Uxn = new double[X*Y];
 	Uyn = new double[X*Y];
 	divU = new double[X*Y];
 	P = new double[X*Y];	
+	fopen_s(&f,"res2.txt", "w");
 
 	//начальные условия
 	for (int i = 0; i<X; i++)
@@ -111,13 +111,12 @@ void ComputeOnOMP::PU::Speeds() {
 }
 
 
-void ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy) {
+void ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
 	
 	this->Ux = Ux;
 	this->Uy = Uy;
 
-	FILE *f;
-	fopen_s(&f,"res2.txt", "w");
+	double t = 0;
 	#pragma omp parallel
 	{
 		do{
@@ -136,17 +135,26 @@ void ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStok
 			t += tau;
 		} while (t <= tmax);
 	}
-	for (int j = 0; j < Y; j++){
-		for (int i = 0; i < X; i++)
+	
+	//for (int j = 0; j < Y; j++){
+	//	for (int i = 0; i < X; i++)
 
 
-			fprintf(f, "%8.3f ", Ux[j*X+i]);
-		fprintf(f, "\n");
-	}
+	//		fprintf(f, "%8.3f ", Ux[j*X+i]);
+	//	fprintf(f, "\n");
+	//}
 
-	fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f ", X, Y, tmax, h, x0, len, tau);
+	//fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f ", X, Y, tmax, h, x0, len, tau);
 
 
 }
 
 
+ComputeOnOMP::PU::~PU() {
+	delete[] Uxn;
+	delete[] Uyn;
+	delete[] divU;
+	delete[] P;
+	fclose(f);
+
+}

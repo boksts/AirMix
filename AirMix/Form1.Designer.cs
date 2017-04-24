@@ -86,6 +86,7 @@ namespace AirMix {
             this.bgw = new System.ComponentModel.BackgroundWorker();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.lblPrc = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
@@ -423,7 +424,6 @@ namespace AirMix {
             this.pbImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbImage.TabIndex = 22;
             this.pbImage.TabStop = false;
-            this.pbImage.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // tbRo
             // 
@@ -656,7 +656,6 @@ namespace AirMix {
             // rbOpenMP
             // 
             this.rbOpenMP.AutoSize = true;
-            this.rbOpenMP.Enabled = false;
             this.rbOpenMP.Location = new System.Drawing.Point(253, 7);
             this.rbOpenMP.Name = "rbOpenMP";
             this.rbOpenMP.Size = new System.Drawing.Size(84, 21);
@@ -676,6 +675,7 @@ namespace AirMix {
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.rbCUDA);
             this.tabPage1.Controls.Add(this.gpInitVal);
             this.tabPage1.Controls.Add(this.rbSeq);
@@ -741,6 +741,16 @@ namespace AirMix {
             this.lblPrc.Size = new System.Drawing.Size(144, 17);
             this.lblPrc.TabIndex = 23;
             this.lblPrc.Text = "Расчет выполнен на";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(628, 25);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(54, 60);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
@@ -832,6 +842,7 @@ namespace AirMix {
         private Label lblPrc;
         private PictureBox pbImage;
         private RadioButton rbCUDA;
+        private Button button1;
     }
 }
 
