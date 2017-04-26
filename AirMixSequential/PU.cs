@@ -250,7 +250,7 @@ namespace AirMixSequential {
             }
 
             for (int i = 0; i < X; i++) {
-                if ((i >= x0) && (i < x0 + len))
+                if ((i >= x0) && (i <= x0 + len))
                     P[i, Y - 1] = 2 * P[i, Y - 2] - P[Y - 3, i]; //скорость 2 потока
             }
         }

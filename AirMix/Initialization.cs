@@ -37,9 +37,11 @@ namespace AirMix {
          }
 
          //Инициализация основных параметров расчета
-         void Init() {
-             SizeX = Convert.ToDouble(tbWidth.Text);
-             SizeY = Convert.ToDouble(tbHeight.Text);
+         void Init(double sizeX = 5.0, double sizeY = 2.0, bool stressTesting = false) {
+             if (!stressTesting) {
+                  sizeX = Convert.ToDouble(tbWidth.Text);
+                  sizeY = Convert.ToDouble(tbHeight.Text);
+             }          
              h = Convert.ToDouble(tbH.Text);
              tau = Convert.ToDouble(tbTau.Text);
              tmax = Convert.ToDouble(tbTimeMax.Text);
@@ -47,8 +49,8 @@ namespace AirMix {
              ro = Convert.ToDouble(tbRo.Text);
              nuM = (rbMissingTurb.Checked) ? 1.0 : Convert.ToDouble(tbNuM.Text);
 
-             X = (int) (SizeX/h) + 1;
-             Y = (int) (SizeY/h) + 1;
+             X = (int) (sizeX/h) + 1;
+             Y = (int) (sizeY/h) + 1;
              x0 = X/8;
              len = X/5;
              Ux = new double[X, Y];
@@ -93,7 +95,7 @@ namespace AirMix {
                  turbulenceModel = 0;
          }
 
-         void InitParallel() {
+         void InitParallel(bool stressTestingOMP = false, bool stressTestingCUDA = false) {
 
              AirMixParallel.PPT ppt; 
              //расчет в системе "давление - скорость"
@@ -108,9 +110,13 @@ namespace AirMix {
                      ? AirMixParallel.PU.NavierStokesCalcMethod.ExplicitScheme
                      : AirMixParallel.PU.NavierStokesCalcMethod.ImplicitScheme;
 
-                 if (rbOpenMP.Checked)
+
+                 bool omp =  (stressTestingCUDA || stressTestingOMP) ? cbOpenMP.Checked : rbOpenMP.Checked;
+                 bool cuda = (stressTestingCUDA || stressTestingOMP) ? cbCUDA.Checked : rbCUDA.Checked;
+               
+                 if (omp)
                     parPU = new AirMixParallel.PU(AirMixParallel.PPT.OpenMP, tau, ro, nuM, x0, len, h, X, Y);
-                 if (rbCUDA.Checked)
+                 if (cuda)
                      parPU = new AirMixParallel.PU(AirMixParallel.PPT.CUDA,tau, ro, nuM, x0, len, h, X, Y);
              }
 

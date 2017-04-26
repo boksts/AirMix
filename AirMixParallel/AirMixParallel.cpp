@@ -25,10 +25,10 @@ AirMixParallel::PU::~PU() {
 	delete[] _Ux;
 	delete[] _Uy;
 	switch (ppt) {
-	case PPT::OpenMP:
+		case PPT::OpenMP:
 		computeOnOMP->~PU();
 		break;
-	case PPT::CUDA:
+		case PPT::CUDA:
 		computeOnCUDA->~PU();
 		break;
 }

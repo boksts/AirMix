@@ -18,7 +18,7 @@ ComputeOnOMP::PU::PU(double tau, double ro, double nuM, int x0, int len, double 
 	Uyn = new double[X*Y];
 	divU = new double[X*Y];
 	P = new double[X*Y];	
-	fopen_s(&f,"res2.txt", "w");
+	//fopen_s(&f,"res2.txt", "w");
 
 	//начальные условия
 	for (int i = 0; i<X; i++)
@@ -155,6 +155,6 @@ ComputeOnOMP::PU::~PU() {
 	delete[] Uyn;
 	delete[] divU;
 	delete[] P;
-	fclose(f);
+	//fclose(f);
 
 }

@@ -25,7 +25,6 @@
         private void InitializeComponent() {
             this.tbc = new System.Windows.Forms.TabControl();
             this.tpUx = new System.Windows.Forms.TabPage();
-            this.btmSaveFileUx = new System.Windows.Forms.Button();
             this.rtbUx = new System.Windows.Forms.RichTextBox();
             this.tpUy = new System.Windows.Forms.TabPage();
             this.btnSaveFileUy = new System.Windows.Forms.Button();
@@ -51,7 +50,6 @@
             // 
             // tpUx
             // 
-            this.tpUx.Controls.Add(this.btmSaveFileUx);
             this.tpUx.Controls.Add(this.rtbUx);
             this.tpUx.Location = new System.Drawing.Point(4, 25);
             this.tpUx.Name = "tpUx";
@@ -60,17 +58,6 @@
             this.tpUx.TabIndex = 0;
             this.tpUx.Text = "Скорости Ux";
             this.tpUx.UseVisualStyleBackColor = true;
-            // 
-            // btmSaveFileUx
-            // 
-            this.btmSaveFileUx.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btmSaveFileUx.Location = new System.Drawing.Point(677, 423);
-            this.btmSaveFileUx.Name = "btmSaveFileUx";
-            this.btmSaveFileUx.Size = new System.Drawing.Size(152, 39);
-            this.btmSaveFileUx.TabIndex = 1;
-            this.btmSaveFileUx.Text = "Сохранить в файл";
-            this.btmSaveFileUx.UseVisualStyleBackColor = true;
-            this.btmSaveFileUx.Click += new System.EventHandler(this.btnSaveFileUx_Click);
             // 
             // rtbUx
             // 
@@ -142,7 +129,6 @@
 
         private System.Windows.Forms.TabControl tbc;
         private System.Windows.Forms.TabPage tpUx;
-        private System.Windows.Forms.Button btmSaveFileUx;
         private System.Windows.Forms.RichTextBox rtbUx;
         private System.Windows.Forms.TabPage tpUy;
         private System.Windows.Forms.Button btnSaveFileUy;

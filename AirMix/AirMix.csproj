@@ -50,8 +50,17 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph">
+      <HintPath>C:\Users\Администратор\Desktop\ZedGraph.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraficsText\ChartForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GraficsText\ChartForm.Designer.cs">
+      <DependentUpon>ChartForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Initialization.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +76,9 @@
     <Compile Include="GraficsText\OutputForm.Designer.cs">
       <DependentUpon>OutputForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modeling.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GraficsText\GraphicsForm.cs">
@@ -75,8 +87,14 @@
     <Compile Include="GraficsText\GraphicsForm.Designer.cs">
       <DependentUpon>GraphicsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="StressTesting.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GraficsText\ChartForm.resx">
+      <DependentUpon>ChartForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GraficsText\OutputForm.resx">
       <DependentUpon>OutputForm.cs</DependentUpon>

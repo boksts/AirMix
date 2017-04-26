@@ -29,16 +29,17 @@ namespace AirMix {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.Label label1;
-            System.Windows.Forms.Label label2;
-            System.Windows.Forms.Label label3;
-            System.Windows.Forms.Label label4;
             System.Windows.Forms.Label label5;
             System.Windows.Forms.Label label6;
             System.Windows.Forms.Label label7;
             System.Windows.Forms.Label label9;
             System.Windows.Forms.Label label10;
             System.Windows.Forms.Label label11;
+            System.Windows.Forms.Label label4;
+            System.Windows.Forms.Label label3;
+            System.Windows.Forms.Label label2;
+            System.Windows.Forms.Label label1;
+            System.Windows.Forms.Label label12;
             this.btnCalculate = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.rbMissingTurb = new System.Windows.Forms.RadioButton();
@@ -51,21 +52,16 @@ namespace AirMix {
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.rbPoisson = new System.Windows.Forms.RadioButton();
             this.rbWeakCompress = new System.Windows.Forms.RadioButton();
+            this.tbRo = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.rbHelmEquImpScheme = new System.Windows.Forms.RadioButton();
             this.rbHelmEquExpScheme = new System.Windows.Forms.RadioButton();
             this.gpInitVal = new System.Windows.Forms.GroupBox();
-            this.pbImage = new System.Windows.Forms.PictureBox();
-            this.tbRo = new System.Windows.Forms.TextBox();
             this.tbTimeMax = new System.Windows.Forms.TextBox();
             this.tbTau = new System.Windows.Forms.TextBox();
             this.tbH = new System.Windows.Forms.TextBox();
-            this.tbUyMax = new System.Windows.Forms.TextBox();
-            this.tbUxMax = new System.Windows.Forms.TextBox();
-            this.tbWidth = new System.Windows.Forms.TextBox();
-            this.tbHeight = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.gbOutput = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
             this.nudScale = new System.Windows.Forms.NumericUpDown();
             this.cbGraphics = new System.Windows.Forms.CheckBox();
@@ -80,79 +76,61 @@ namespace AirMix {
             this.rbOpenMP = new System.Windows.Forms.RadioButton();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.rbModeling = new System.Windows.Forms.RadioButton();
+            this.gbModeling = new System.Windows.Forms.GroupBox();
             this.rbCUDA = new System.Windows.Forms.RadioButton();
+            this.gbStressTesting = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.nudStressTesting = new System.Windows.Forms.NumericUpDown();
+            this.cbCUDA = new System.Windows.Forms.CheckBox();
+            this.cbOpenMP = new System.Windows.Forms.CheckBox();
+            this.cbSeq = new System.Windows.Forms.CheckBox();
+            this.rbStressTesting = new System.Windows.Forms.RadioButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tbWidth = new System.Windows.Forms.TextBox();
+            this.tbHeight = new System.Windows.Forms.TextBox();
+            this.tbUyMax = new System.Windows.Forms.TextBox();
+            this.tbUxMax = new System.Windows.Forms.TextBox();
+            this.pbImage = new System.Windows.Forms.PictureBox();
             this.pgb = new System.Windows.Forms.ProgressBar();
             this.bgw = new System.ComponentModel.BackgroundWorker();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.lblPrc = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            label1 = new System.Windows.Forms.Label();
-            label2 = new System.Windows.Forms.Label();
-            label3 = new System.Windows.Forms.Label();
-            label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
             label6 = new System.Windows.Forms.Label();
             label7 = new System.Windows.Forms.Label();
             label9 = new System.Windows.Forms.Label();
             label10 = new System.Windows.Forms.Label();
             label11 = new System.Windows.Forms.Label();
+            label4 = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
+            label12 = new System.Windows.Forms.Label();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.gpInitVal.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
-            this.groupBox1.SuspendLayout();
+            this.gbOutput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudScale)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.gbPU.SuspendLayout();
             this.gbWPsi.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.gbModeling.SuspendLayout();
+            this.gbStressTesting.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStressTesting)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             this.groupBox6.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(9, 26);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(57, 17);
-            label1.TabIndex = 2;
-            label1.Text = "Высота";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(9, 55);
-            label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(59, 17);
-            label2.TabIndex = 3;
-            label2.Text = "Ширина";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(23, 94);
-            label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(145, 17);
-            label3.TabIndex = 6;
-            label3.Text = "Скорость потока №1";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(236, 94);
-            label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(145, 17);
-            label4.TabIndex = 7;
-            label4.Text = "Скорость потока №2";
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(334, 24);
+            label5.Location = new System.Drawing.Point(36, 108);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(95, 17);
             label5.TabIndex = 9;
@@ -161,7 +139,7 @@ namespace AirMix {
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(147, 23);
+            label6.Location = new System.Drawing.Point(10, 33);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(126, 17);
             label6.TabIndex = 11;
@@ -170,7 +148,7 @@ namespace AirMix {
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(160, 52);
+            label7.Location = new System.Drawing.Point(23, 71);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(108, 17);
             label7.TabIndex = 13;
@@ -197,11 +175,56 @@ namespace AirMix {
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(346, 51);
+            label11.Location = new System.Drawing.Point(9, 78);
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(78, 17);
             label11.TabIndex = 21;
             label11.Text = "Плотность";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(367, 121);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(145, 17);
+            label4.TabIndex = 27;
+            label4.Text = "Скорость потока №2";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(367, 93);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(145, 17);
+            label3.TabIndex = 26;
+            label3.Text = "Скорость потока №1";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(366, 50);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(59, 17);
+            label2.TabIndex = 31;
+            label2.Text = "Ширина";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(366, 21);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(57, 17);
+            label1.TabIndex = 30;
+            label1.Text = "Высота";
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new System.Drawing.Point(6, 109);
+            label12.Name = "label12";
+            label12.Size = new System.Drawing.Size(139, 17);
+            label12.TabIndex = 17;
+            label12.Text = "Число измерений N";
             // 
             // btnCalculate
             // 
@@ -282,7 +305,7 @@ namespace AirMix {
             this.groupBox4.Controls.Add(this.rbNSEquImpScheme);
             this.groupBox4.Controls.Add(this.rbNSEquExpScheme);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox4.Location = new System.Drawing.Point(6, 107);
+            this.groupBox4.Location = new System.Drawing.Point(6, 131);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(272, 84);
             this.groupBox4.TabIndex = 9;
@@ -319,11 +342,13 @@ namespace AirMix {
             // 
             this.groupBox3.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.groupBox3.Controls.Add(this.rbPoisson);
+            this.groupBox3.Controls.Add(label11);
             this.groupBox3.Controls.Add(this.rbWeakCompress);
+            this.groupBox3.Controls.Add(this.tbRo);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox3.Location = new System.Drawing.Point(6, 15);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(272, 82);
+            this.groupBox3.Size = new System.Drawing.Size(272, 110);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Метод расчета давления";
@@ -350,6 +375,14 @@ namespace AirMix {
             this.rbWeakCompress.TabStop = true;
             this.rbWeakCompress.Text = "слабой сжимаемости";
             this.rbWeakCompress.UseVisualStyleBackColor = true;
+            // 
+            // tbRo
+            // 
+            this.tbRo.Location = new System.Drawing.Point(98, 75);
+            this.tbRo.Name = "tbRo";
+            this.tbRo.Size = new System.Drawing.Size(43, 22);
+            this.tbRo.TabIndex = 20;
+            this.tbRo.Text = "1.0";
             // 
             // groupBox7
             // 
@@ -391,51 +424,23 @@ namespace AirMix {
             // 
             // gpInitVal
             // 
-            this.gpInitVal.Controls.Add(this.pbImage);
-            this.gpInitVal.Controls.Add(label11);
             this.gpInitVal.Controls.Add(label9);
-            this.gpInitVal.Controls.Add(this.tbRo);
             this.gpInitVal.Controls.Add(label7);
             this.gpInitVal.Controls.Add(this.tbTimeMax);
             this.gpInitVal.Controls.Add(label6);
             this.gpInitVal.Controls.Add(this.tbTau);
             this.gpInitVal.Controls.Add(label5);
             this.gpInitVal.Controls.Add(this.tbH);
-            this.gpInitVal.Controls.Add(label4);
-            this.gpInitVal.Controls.Add(label3);
-            this.gpInitVal.Controls.Add(this.tbUyMax);
-            this.gpInitVal.Controls.Add(this.tbUxMax);
-            this.gpInitVal.Controls.Add(label2);
-            this.gpInitVal.Controls.Add(label1);
-            this.gpInitVal.Controls.Add(this.tbWidth);
-            this.gpInitVal.Controls.Add(this.tbHeight);
-            this.gpInitVal.Location = new System.Drawing.Point(6, 34);
+            this.gpInitVal.Location = new System.Drawing.Point(6, 6);
             this.gpInitVal.Name = "gpInitVal";
-            this.gpInitVal.Size = new System.Drawing.Size(838, 134);
+            this.gpInitVal.Size = new System.Drawing.Size(226, 162);
             this.gpInitVal.TabIndex = 2;
             this.gpInitVal.TabStop = false;
             this.gpInitVal.Text = "Начальные условия";
             // 
-            // pbImage
-            // 
-            this.pbImage.Location = new System.Drawing.Point(510, 16);
-            this.pbImage.Name = "pbImage";
-            this.pbImage.Size = new System.Drawing.Size(314, 111);
-            this.pbImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pbImage.TabIndex = 22;
-            this.pbImage.TabStop = false;
-            // 
-            // tbRo
-            // 
-            this.tbRo.Location = new System.Drawing.Point(435, 48);
-            this.tbRo.Name = "tbRo";
-            this.tbRo.Size = new System.Drawing.Size(43, 22);
-            this.tbRo.TabIndex = 20;
-            this.tbRo.Text = "1.0";
-            // 
             // tbTimeMax
             // 
-            this.tbTimeMax.Location = new System.Drawing.Point(279, 49);
+            this.tbTimeMax.Location = new System.Drawing.Point(142, 70);
             this.tbTimeMax.Name = "tbTimeMax";
             this.tbTimeMax.Size = new System.Drawing.Size(43, 22);
             this.tbTimeMax.TabIndex = 12;
@@ -443,7 +448,7 @@ namespace AirMix {
             // 
             // tbTau
             // 
-            this.tbTau.Location = new System.Drawing.Point(279, 23);
+            this.tbTau.Location = new System.Drawing.Point(142, 33);
             this.tbTau.Name = "tbTau";
             this.tbTau.Size = new System.Drawing.Size(43, 22);
             this.tbTau.TabIndex = 10;
@@ -451,43 +456,11 @@ namespace AirMix {
             // 
             // tbH
             // 
-            this.tbH.Location = new System.Drawing.Point(435, 23);
+            this.tbH.Location = new System.Drawing.Point(142, 108);
             this.tbH.Name = "tbH";
             this.tbH.Size = new System.Drawing.Size(43, 22);
             this.tbH.TabIndex = 8;
             this.tbH.Text = "0.1";
-            // 
-            // tbUyMax
-            // 
-            this.tbUyMax.Location = new System.Drawing.Point(387, 94);
-            this.tbUyMax.Name = "tbUyMax";
-            this.tbUyMax.Size = new System.Drawing.Size(43, 22);
-            this.tbUyMax.TabIndex = 5;
-            this.tbUyMax.Text = "0.5";
-            // 
-            // tbUxMax
-            // 
-            this.tbUxMax.Location = new System.Drawing.Point(174, 94);
-            this.tbUxMax.Name = "tbUxMax";
-            this.tbUxMax.Size = new System.Drawing.Size(43, 22);
-            this.tbUxMax.TabIndex = 4;
-            this.tbUxMax.Text = "0.7";
-            // 
-            // tbWidth
-            // 
-            this.tbWidth.Location = new System.Drawing.Point(69, 55);
-            this.tbWidth.Name = "tbWidth";
-            this.tbWidth.Size = new System.Drawing.Size(47, 22);
-            this.tbWidth.TabIndex = 1;
-            this.tbWidth.Text = "5.0";
-            // 
-            // tbHeight
-            // 
-            this.tbHeight.Location = new System.Drawing.Point(69, 23);
-            this.tbHeight.Name = "tbHeight";
-            this.tbHeight.Size = new System.Drawing.Size(47, 22);
-            this.tbHeight.TabIndex = 0;
-            this.tbHeight.Text = "2.0";
             // 
             // btnCancel
             // 
@@ -501,19 +474,19 @@ namespace AirMix {
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // groupBox1
+            // gbOutput
             // 
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.nudScale);
-            this.groupBox1.Controls.Add(this.cbGraphics);
-            this.groupBox1.Controls.Add(this.cbTextFile);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox1.Location = new System.Drawing.Point(641, 221);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(220, 114);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Вывод результатов";
+            this.gbOutput.Controls.Add(this.label8);
+            this.gbOutput.Controls.Add(this.nudScale);
+            this.gbOutput.Controls.Add(this.cbGraphics);
+            this.gbOutput.Controls.Add(this.cbTextFile);
+            this.gbOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.gbOutput.Location = new System.Drawing.Point(641, 221);
+            this.gbOutput.Name = "gbOutput";
+            this.gbOutput.Size = new System.Drawing.Size(220, 114);
+            this.gbOutput.TabIndex = 4;
+            this.gbOutput.TabStop = false;
+            this.gbOutput.Text = "Вывод результатов";
             // 
             // label8
             // 
@@ -586,7 +559,7 @@ namespace AirMix {
             this.groupBox2.Size = new System.Drawing.Size(612, 287);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Система расчета";
+            this.groupBox2.Text = "Математическая модель";
             // 
             // rbWPsi
             // 
@@ -620,9 +593,9 @@ namespace AirMix {
             this.gbPU.Controls.Add(this.groupBox3);
             this.gbPU.Controls.Add(this.groupBox4);
             this.gbPU.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.gbPU.Location = new System.Drawing.Point(10, 60);
+            this.gbPU.Location = new System.Drawing.Point(10, 46);
             this.gbPU.Name = "gbPU";
-            this.gbPU.Size = new System.Drawing.Size(284, 207);
+            this.gbPU.Size = new System.Drawing.Size(284, 221);
             this.gbPU.TabIndex = 0;
             this.gbPU.TabStop = false;
             // 
@@ -631,9 +604,9 @@ namespace AirMix {
             this.gbWPsi.Controls.Add(this.groupBox7);
             this.gbWPsi.Enabled = false;
             this.gbWPsi.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.gbWPsi.Location = new System.Drawing.Point(317, 60);
+            this.gbWPsi.Location = new System.Drawing.Point(317, 46);
             this.gbWPsi.Name = "gbWPsi";
-            this.gbWPsi.Size = new System.Drawing.Size(284, 98);
+            this.gbWPsi.Size = new System.Drawing.Size(284, 112);
             this.gbWPsi.TabIndex = 1;
             this.gbWPsi.TabStop = false;
             // 
@@ -645,7 +618,7 @@ namespace AirMix {
             // 
             this.rbSeq.AutoSize = true;
             this.rbSeq.Checked = true;
-            this.rbSeq.Location = new System.Drawing.Point(6, 7);
+            this.rbSeq.Location = new System.Drawing.Point(5, 29);
             this.rbSeq.Name = "rbSeq";
             this.rbSeq.Size = new System.Drawing.Size(241, 21);
             this.rbSeq.TabIndex = 2;
@@ -656,7 +629,7 @@ namespace AirMix {
             // rbOpenMP
             // 
             this.rbOpenMP.AutoSize = true;
-            this.rbOpenMP.Location = new System.Drawing.Point(253, 7);
+            this.rbOpenMP.Location = new System.Drawing.Point(5, 63);
             this.rbOpenMP.Name = "rbOpenMP";
             this.rbOpenMP.Size = new System.Drawing.Size(84, 21);
             this.rbOpenMP.TabIndex = 7;
@@ -675,11 +648,11 @@ namespace AirMix {
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Controls.Add(this.rbCUDA);
+            this.tabPage1.Controls.Add(this.rbModeling);
+            this.tabPage1.Controls.Add(this.gbModeling);
+            this.tabPage1.Controls.Add(this.gbStressTesting);
+            this.tabPage1.Controls.Add(this.rbStressTesting);
             this.tabPage1.Controls.Add(this.gpInitVal);
-            this.tabPage1.Controls.Add(this.rbSeq);
-            this.tabPage1.Controls.Add(this.rbOpenMP);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -688,23 +661,189 @@ namespace AirMix {
             this.tabPage1.Text = "Основные вычисления";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // rbModeling
+            // 
+            this.rbModeling.AutoSize = true;
+            this.rbModeling.Checked = true;
+            this.rbModeling.Location = new System.Drawing.Point(320, 6);
+            this.rbModeling.Name = "rbModeling";
+            this.rbModeling.Size = new System.Drawing.Size(135, 21);
+            this.rbModeling.TabIndex = 12;
+            this.rbModeling.TabStop = true;
+            this.rbModeling.Text = "Моделирование";
+            this.rbModeling.UseVisualStyleBackColor = true;
+            // 
+            // gbModeling
+            // 
+            this.gbModeling.Controls.Add(this.rbSeq);
+            this.gbModeling.Controls.Add(this.rbOpenMP);
+            this.gbModeling.Controls.Add(this.rbCUDA);
+            this.gbModeling.Location = new System.Drawing.Point(248, 37);
+            this.gbModeling.Name = "gbModeling";
+            this.gbModeling.Size = new System.Drawing.Size(257, 131);
+            this.gbModeling.TabIndex = 11;
+            this.gbModeling.TabStop = false;
+            this.gbModeling.Text = "Система расчета";
+            // 
             // rbCUDA
             // 
-            this.rbCUDA.Location = new System.Drawing.Point(368, 7);
+            this.rbCUDA.Location = new System.Drawing.Point(5, 93);
             this.rbCUDA.Name = "rbCUDA";
             this.rbCUDA.Size = new System.Drawing.Size(67, 21);
             this.rbCUDA.TabIndex = 8;
             this.rbCUDA.Text = "CUDA";
             this.rbCUDA.UseVisualStyleBackColor = true;
             // 
+            // gbStressTesting
+            // 
+            this.gbStressTesting.Controls.Add(this.label13);
+            this.gbStressTesting.Controls.Add(this.nudStressTesting);
+            this.gbStressTesting.Controls.Add(label12);
+            this.gbStressTesting.Controls.Add(this.cbCUDA);
+            this.gbStressTesting.Controls.Add(this.cbOpenMP);
+            this.gbStressTesting.Controls.Add(this.cbSeq);
+            this.gbStressTesting.Enabled = false;
+            this.gbStressTesting.Location = new System.Drawing.Point(519, 34);
+            this.gbStressTesting.Name = "gbStressTesting";
+            this.gbStressTesting.Size = new System.Drawing.Size(328, 134);
+            this.gbStressTesting.TabIndex = 10;
+            this.gbStressTesting.TabStop = false;
+            this.gbStressTesting.Text = "Параметры";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(8, 85);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(260, 17);
+            this.label13.TabIndex = 19;
+            this.label13.Text = "X = 10,20,...N*10  Y = 4,8,...N*4  h = 0.1";
+            // 
+            // nudStressTesting
+            // 
+            this.nudStressTesting.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.nudStressTesting.Location = new System.Drawing.Point(147, 107);
+            this.nudStressTesting.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.nudStressTesting.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.nudStressTesting.Name = "nudStressTesting";
+            this.nudStressTesting.Size = new System.Drawing.Size(56, 22);
+            this.nudStressTesting.TabIndex = 18;
+            this.nudStressTesting.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // cbCUDA
+            // 
+            this.cbCUDA.AutoSize = true;
+            this.cbCUDA.Location = new System.Drawing.Point(101, 58);
+            this.cbCUDA.Name = "cbCUDA";
+            this.cbCUDA.Size = new System.Drawing.Size(68, 21);
+            this.cbCUDA.TabIndex = 2;
+            this.cbCUDA.Text = "CUDA";
+            this.cbCUDA.UseVisualStyleBackColor = true;
+            // 
+            // cbOpenMP
+            // 
+            this.cbOpenMP.AutoSize = true;
+            this.cbOpenMP.Location = new System.Drawing.Point(10, 57);
+            this.cbOpenMP.Name = "cbOpenMP";
+            this.cbOpenMP.Size = new System.Drawing.Size(85, 21);
+            this.cbOpenMP.TabIndex = 1;
+            this.cbOpenMP.Text = "OpenMP";
+            this.cbOpenMP.UseVisualStyleBackColor = true;
+            // 
+            // cbSeq
+            // 
+            this.cbSeq.AutoSize = true;
+            this.cbSeq.Checked = true;
+            this.cbSeq.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSeq.Location = new System.Drawing.Point(10, 26);
+            this.cbSeq.Name = "cbSeq";
+            this.cbSeq.Size = new System.Drawing.Size(242, 21);
+            this.cbSeq.TabIndex = 0;
+            this.cbSeq.Text = "Последовательные вычисления";
+            this.cbSeq.UseVisualStyleBackColor = true;
+            // 
+            // rbStressTesting
+            // 
+            this.rbStressTesting.AutoSize = true;
+            this.rbStressTesting.Location = new System.Drawing.Point(577, 6);
+            this.rbStressTesting.Name = "rbStressTesting";
+            this.rbStressTesting.Size = new System.Drawing.Size(210, 21);
+            this.rbStressTesting.TabIndex = 9;
+            this.rbStressTesting.Text = "Нагрузочное тестирование";
+            this.rbStressTesting.UseVisualStyleBackColor = true;
+            this.rbStressTesting.CheckedChanged += new System.EventHandler(this.rbStressTesting_CheckedChanged);
+            // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(label2);
+            this.tabPage3.Controls.Add(label1);
+            this.tabPage3.Controls.Add(this.tbWidth);
+            this.tabPage3.Controls.Add(this.tbHeight);
+            this.tabPage3.Controls.Add(label4);
+            this.tabPage3.Controls.Add(label3);
+            this.tabPage3.Controls.Add(this.tbUyMax);
+            this.tabPage3.Controls.Add(this.tbUxMax);
+            this.tabPage3.Controls.Add(this.pbImage);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(850, 174);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Нагрузочное тестирование";
+            this.tabPage3.Text = "Конфигурация потоков";
             this.tabPage3.UseVisualStyleBackColor = true;
+            this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
+            // 
+            // tbWidth
+            // 
+            this.tbWidth.Location = new System.Drawing.Point(426, 50);
+            this.tbWidth.Name = "tbWidth";
+            this.tbWidth.Size = new System.Drawing.Size(47, 22);
+            this.tbWidth.TabIndex = 29;
+            this.tbWidth.Text = "5.0";
+            // 
+            // tbHeight
+            // 
+            this.tbHeight.Location = new System.Drawing.Point(426, 18);
+            this.tbHeight.Name = "tbHeight";
+            this.tbHeight.Size = new System.Drawing.Size(47, 22);
+            this.tbHeight.TabIndex = 28;
+            this.tbHeight.Text = "2.0";
+            // 
+            // tbUyMax
+            // 
+            this.tbUyMax.Location = new System.Drawing.Point(518, 121);
+            this.tbUyMax.Name = "tbUyMax";
+            this.tbUyMax.Size = new System.Drawing.Size(43, 22);
+            this.tbUyMax.TabIndex = 25;
+            this.tbUyMax.Text = "0.5";
+            // 
+            // tbUxMax
+            // 
+            this.tbUxMax.Location = new System.Drawing.Point(518, 93);
+            this.tbUxMax.Name = "tbUxMax";
+            this.tbUxMax.Size = new System.Drawing.Size(43, 22);
+            this.tbUxMax.TabIndex = 24;
+            this.tbUxMax.Text = "0.7";
+            // 
+            // pbImage
+            // 
+            this.pbImage.Location = new System.Drawing.Point(12, 18);
+            this.pbImage.Name = "pbImage";
+            this.pbImage.Size = new System.Drawing.Size(314, 140);
+            this.pbImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbImage.TabIndex = 23;
+            this.pbImage.TabStop = false;
             // 
             // pgb
             // 
@@ -732,6 +871,7 @@ namespace AirMix {
             this.groupBox6.Size = new System.Drawing.Size(220, 167);
             this.groupBox6.TabIndex = 23;
             this.groupBox6.TabStop = false;
+            this.groupBox6.Enter += new System.EventHandler(this.groupBox6_Enter);
             // 
             // lblPrc
             // 
@@ -742,16 +882,6 @@ namespace AirMix {
             this.lblPrc.TabIndex = 23;
             this.lblPrc.Text = "Расчет выполнен на";
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(628, 25);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(54, 60);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -761,11 +891,12 @@ namespace AirMix {
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.gbOutput);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Моделирование смешивания потоков воздуха";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -776,9 +907,8 @@ namespace AirMix {
             this.groupBox7.PerformLayout();
             this.gpInitVal.ResumeLayout(false);
             this.gpInitVal.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbImage)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.gbOutput.ResumeLayout(false);
+            this.gbOutput.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudScale)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -787,6 +917,14 @@ namespace AirMix {
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.gbModeling.ResumeLayout(false);
+            this.gbModeling.PerformLayout();
+            this.gbStressTesting.ResumeLayout(false);
+            this.gbStressTesting.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStressTesting)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbImage)).EndInit();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
@@ -800,12 +938,8 @@ namespace AirMix {
         private TextBox tbTimeMax;
         private TextBox tbTau;
         private TextBox tbH;
-        private TextBox tbUyMax;
-        private TextBox tbUxMax;
-        private TextBox tbWidth;
-        private TextBox tbHeight;
         private Button btnCancel;
-        private GroupBox groupBox1;
+        private GroupBox gbOutput;
         private CheckBox cbGraphics;
         private CheckBox cbTextFile;
         private GroupBox groupBox2;
@@ -840,9 +974,21 @@ namespace AirMix {
         private ProgressBar pgb;
         private GroupBox groupBox6;
         private Label lblPrc;
-        private PictureBox pbImage;
         private RadioButton rbCUDA;
-        private Button button1;
+        private GroupBox gbStressTesting;
+        private CheckBox cbCUDA;
+        private CheckBox cbOpenMP;
+        private CheckBox cbSeq;
+        private RadioButton rbStressTesting;
+        private RadioButton rbModeling;
+        private GroupBox gbModeling;
+        private TextBox tbWidth;
+        private TextBox tbHeight;
+        private TextBox tbUyMax;
+        private TextBox tbUxMax;
+        private PictureBox pbImage;
+        private NumericUpDown nudStressTesting;
+        private Label label13;
     }
 }
 

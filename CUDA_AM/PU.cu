@@ -123,7 +123,7 @@ int x0, len;
 double tau, h;
 double nuM, ro;
 int sizef;
-FILE *f;
+//FILE *f;
 int gridSizeX,gridSizeY;
 
 void Compute(ComputeOnCUDA::PU::PressureCalcMethod pressureMethod, ComputeOnCUDA::PU::NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
@@ -174,7 +174,7 @@ void Constructor(double _tau, double _ro, double _nuM, int _x0, int _len, double
 	X = _X;
 	Y = _Y;
 	
-	f = fopen("res.txt", "w");
+	//f = fopen("res.txt", "w");
 	double *P = new double[X*Y];//давление
 
 	//Time* time = new Time();
@@ -202,7 +202,7 @@ void Constructor(double _tau, double _ro, double _nuM, int _x0, int _len, double
 	//time->tn();
 
 	cudaMemcpy(PDev, P, sizef, cudaMemcpyHostToDevice);
-	fprintf(f, "Память выделена\n");
+	//fprintf(f, "Память выделена\n");
 
 //конец замера времени вычислений
 	//timer = time->tk();
@@ -237,7 +237,7 @@ void Constructor(double _tau, double _ro, double _nuM, int _x0, int _len, double
 
 void Destructor() {
 	//fprintf(f, "Память освобождена, файл закрыт\n");
-	fclose(f);
+	//fclose(f);
 	cudaFree(UxDev);
 	cudaFree(UxnDev);
 	cudaFree(UyDev);

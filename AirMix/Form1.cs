@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
@@ -11,6 +12,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AirMix.Grafics;
+using AirMix.GraficsText;
+using ZedGraph;
 
 
 namespace AirMix {
@@ -50,140 +53,11 @@ namespace AirMix {
        }
 
 
-       private void CalculationSeq(object sender, DoWorkEventArgs e) {
-           BackgroundWorker bw = sender as BackgroundWorker;
-           double t = 0;
-
-           do {
-               t += tau;
-               //состояние расчета
-               bw.ReportProgress((int) (t/tmax*100));
-
-               //если произведена отмена
-               if (bw.CancellationPending) {
-                   e.Cancel = true;
-                   return;
-               }
-
-               //расчет в системе "давление - скорость"
-               if (rbPU.Checked)
-                   pu.Calculation((AirMixSequential.PU.PressureCalcMethod) pressureCalcMethod,
-                       (AirMixSequential.PU.NavierStokesCalcMethod) navierStokesCalcMethod,
-                       (AirMixSequential.TurbulenceModel) turbulenceModel, Ux, Uy, 0.0);
-
-               //расчет в системе "вихрь - функция тока"
-               if (rbWPsi.Checked)
-                   wpsi.Calculation((AirMixSequential.WPsi.HelmholtzCalcMethod) helmholtzCalcMethod,
-                       (AirMixSequential.TurbulenceModel) turbulenceModel, Ux, Uy, 0.0);
-
-               if (cbGraphics.Checked)
-                   Thread.Sleep(10);
-           } while (t <= tmax);
-       }
-
-       private void CalculationParallel(object sender, DoWorkEventArgs e) {
-           BackgroundWorker bw = sender as BackgroundWorker;
-           double t = 0;
-           double[] Ux1d = new double[X*Y];
-           double[] Uy1d = new double[X*Y];
-
-           do {
-               for (int j = 0; j < Y; j++)
-                   for (int i = 0; i < X; i++) {
-                       Ux1d[j*X + i] = Ux[i, j];
-                       Uy1d[j*X + i] = Uy[i, j];
-                   }
-
-               t += tau;
-               //состояние расчета
-               bw.ReportProgress((int) (t/tmax*100));
-
-               //если произведена отмена
-               if (bw.CancellationPending) {
-                   e.Cancel = true;
-                   return;
-               }
-
-               //расчет в системе "давление - скорость"
-               if (rbPU.Checked) {
-                   if (rbCUDA.Checked)
-                       parPU.Calculation((AirMixParallel.PU.PressureCalcMethod) pressureCalcMethod,
-                           (AirMixParallel.PU.NavierStokesCalcMethod) navierStokesCalcMethod,
-                           (AirMixParallel.TurbulenceModel) turbulenceModel, Ux1d, Uy1d, 0.0);
-                   
-                  if (rbOpenMP.Checked)
-                      parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
-                          (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
-                          (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, 0.0);
-               }
-                   
-               
-               //расчет в системе "вихрь - функция тока"
-               if (rbWPsi.Checked) {
-                   
-               }
-
-              if (cbGraphics.Checked)
-                   Thread.Sleep(10);
-
-               for (int j = 0; j < Y; j++)
-                   for (int i = 0; i < X; i++) {
-                       Ux[i, j] = Ux1d[j*X + i];
-                       Uy[i, j] = Uy1d[j*X + i];
-                   }
-           } while (t <= tmax);
-       }
-
-
        private void btnCalculate_Click(object sender, EventArgs e) {
-           btnCancel.Enabled = true;
-           btnCalculate.Enabled = false;
-
-           //инициализация параметров расчета
-           Init();
-
-           if (rbSeq.Checked) {
-               InitSequential();
-           }
-
-           if (rbCUDA.Checked || rbOpenMP.Checked) {
-               InitParallel();
-           }
-
-           //запуск расчета в отдельном потоке
-           bgw.RunWorkerAsync();
-
-           //вывод скоростей графическом виде       
-           if (cbGraphics.Checked) {
-               grForm = new GraphicsForm(X, Y, scale: scale);
-               grForm.Show();
-               grForm.Closing += grForm_Closing;
-           }
-
-           bool error;
-
-           //пока идет расчет
-           while (bgw.IsBusy) {
-               //вывод графики
-               if (cbGraphics.Checked) {
-                   error = grForm.DrawDisplay(Ux, Uy, x0, len);
-                   if (error)
-                       bgw.CancelAsync();
-               }
-               Application.DoEvents();
-           }
-
-           //вывод результатов  в текстовом виде      
-           if (cbTextFile.Checked) {
-               outForm = new OutputForm {X = X, Y = Y};
-               outForm.Show();
-               outForm.OutSpeeds(Ux, Uy);
-           }
-
-           if (rbCUDA.Checked || rbOpenMP.Checked) {
-               parPU.Dispose();
-           }
-           
+           if (rbModeling.Checked)
+               Modeling();
+           if (rbStressTesting.Checked)
+               StressTesting();
        }
 
        //метод при закрытии формы с графикой
@@ -208,23 +82,39 @@ namespace AirMix {
 
        //-----------BackgroundWorker---------------------------------
        private void bgw_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-           pgb.Value = e.ProgressPercentage;
-           lblPrc.Text = "Расчет выполнен на " + pgb.Value + "%";
+           if (rbModeling.Checked) {
+               pgb.Value = e.ProgressPercentage;
+                lblPrc.Text = "Расчет выполнен на " + pgb.Value + "%";
+           }
+           if (rbStressTesting.Checked) {
+               pgb.Style = ProgressBarStyle.Marquee;
+               lblPrc.Text = "Расчеты выполняются ...";
+           }
        }
 
        private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
            string str = e.Cancelled ? "Расчет отменен!" : "Расчет завершен!";
+           lblPrc.Text = "";
            pgb.Value = 0;
+           pgb.Style = ProgressBarStyle.Blocks;
            btnCancel.Enabled = false;
            btnCalculate.Enabled = true;
            MessageBox.Show(str);
+        
        }
 
        private void bgw_DoWork(object sender, DoWorkEventArgs e) {
-           if (rbSeq.Checked)
-               CalculationSeq(sender, e);
-           if (rbCUDA.Checked || rbOpenMP.Checked)
-               CalculationParallel(sender, e);
+           if (rbModeling.Checked) {
+               if (rbSeq.Checked)
+                   CalculationSeq(sender, e);
+               if (rbCUDA.Checked || rbOpenMP.Checked)
+                   CalculationParallel(sender, e);
+           }
+           if (rbStressTesting.Checked) {
+               StressTestingCalculate(sender, e);
+           }
+          
+           
        }
 
        //===================================================================
@@ -246,28 +136,29 @@ namespace AirMix {
            gbWPsi.Enabled = rbWPsi.Checked;
        }
 
-       private void button1_Click(object sender, EventArgs e) {
-           Init();
-           InitParallel();
-        double[] Ux1d = new double[X*Y];
-           double[] Uy1d = new double[X*Y];
 
+       private void rbStressTesting_CheckedChanged(object sender, EventArgs e) {
+           gbStressTesting.Enabled = rbStressTesting.Checked;
+           gbModeling.Enabled = gbOutput.Enabled = !rbStressTesting.Checked;
+           tbH.Text = "0.1";
+           tbH.Enabled = !rbStressTesting.Checked;
 
-               for (int j = 0; j < Y; j++)
-                   for (int i = 0; i < X; i++) {
-                       Ux1d[j*X + i] = Ux[i, j];
-                       Uy1d[j*X + i] = Uy[i, j];
-                   }
-
-               parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
-                   (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
-                   (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, 0.01);
-
-               for (int j = 0; j < Y; j++)
-                   for (int i = 0; i < X; i++) {
-                       Ux[i, j] = Ux1d[j * X + i];
-                       Uy[i, j] = Uy1d[j * X + i];
-                   }
        }
+
+
+       private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
+           bgw.CancelAsync();
+       }
+
+       private void groupBox6_Enter(object sender, EventArgs e) {
+
+       }
+
+       private void tabPage3_Click(object sender, EventArgs e) {
+
+       }
+
+   
+    
    }
 }
