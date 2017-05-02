@@ -4,10 +4,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirMix", "AirMix\AirMix.csproj", "{7921CB2B-2C72-42FF-8F1C-767FFDA9F593}"
+	ProjectSection(ProjectDependencies) = postProject
+		{48B3E454-6BC3-42B7-8848-25DA2001D5D8} = {48B3E454-6BC3-42B7-8848-25DA2001D5D8}
+		{A069FEB4-4A6F-42D8-8C18-AE23C04348BC} = {A069FEB4-4A6F-42D8-8C18-AE23C04348BC}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirMixSequential", "AirMixSequential\AirMixSequential.csproj", "{A069FEB4-4A6F-42D8-8C18-AE23C04348BC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AirMixParallel", "AirMixParallel\AirMixParallel.vcxproj", "{48B3E454-6BC3-42B7-8848-25DA2001D5D8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BD0F990C-8925-49C7-B490-0CD1AD92620B} = {BD0F990C-8925-49C7-B490-0CD1AD92620B}
+		{B4FD506C-1AC9-41B7-95C4-271161D55818} = {B4FD506C-1AC9-41B7-95C4-271161D55818}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenMP_AM", "OpenMP_AM\OpenMP_AM.vcxproj", "{BD0F990C-8925-49C7-B490-0CD1AD92620B}"
 EndProject

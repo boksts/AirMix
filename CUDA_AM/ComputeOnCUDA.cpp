@@ -12,8 +12,8 @@ ComputeOnCUDA::PU::PU(double tau, double ro, double nuM, int x0, int len, double
 ComputeOnCUDA::PU::~PU() {
 	Destructor();
 }
-void ComputeOnCUDA::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double* Ux, double* Uy, double tmax) {
-	 Compute(pressureMethod, navierStokesMethod,Ux, Uy, tmax);
+double ComputeOnCUDA::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double* Ux, double* Uy, double tmax) {
+	 return Compute(pressureMethod, navierStokesMethod,Ux, Uy, tmax);
 }
 
 

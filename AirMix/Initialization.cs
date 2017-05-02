@@ -111,8 +111,8 @@ namespace AirMix {
                      : AirMixParallel.PU.NavierStokesCalcMethod.ImplicitScheme;
 
 
-                 bool omp =  (stressTestingCUDA || stressTestingOMP) ? cbOpenMP.Checked : rbOpenMP.Checked;
-                 bool cuda = (stressTestingCUDA || stressTestingOMP) ? cbCUDA.Checked : rbCUDA.Checked;
+                 bool omp = (stressTestingCUDA || stressTestingOMP) ? stressTestingOMP : rbOpenMP.Checked;
+                 bool cuda = (stressTestingCUDA || stressTestingOMP) ? stressTestingCUDA : rbCUDA.Checked;
                
                  if (omp)
                     parPU = new AirMixParallel.PU(AirMixParallel.PPT.OpenMP, tau, ro, nuM, x0, len, h, X, Y);

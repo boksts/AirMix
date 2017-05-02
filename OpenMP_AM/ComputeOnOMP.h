@@ -1,8 +1,27 @@
 #pragma once
 #include  <iostream>
+#include <omp.h>
 
 class ComputeOnOMP {
 public:
+	//методы для вычисления времени
+	class Time{
+		double Tn, Tk;
+		time_t start, end;
+	public:
+		double time;
+
+		void tn(){
+			Tn = omp_get_wtime();
+		}
+		double tk(){
+			Tk = omp_get_wtime();
+			time = Tk - Tn;
+			return time;
+		}
+
+	};
+
 	class PU {
 	private:
 	
@@ -30,7 +49,7 @@ public:
 			ImplicitScheme //неявная схема
 		};
 
-		void Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax);
+		double Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax);
 		void _Poisson();
 		void _WeakСompressibility();
 		void Speeds();

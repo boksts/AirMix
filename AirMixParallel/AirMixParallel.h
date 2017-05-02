@@ -93,7 +93,7 @@ namespace AirMixParallel {
 		///  <param name="Ux">скорости Ux</param>
 		///  <param name="Uy">скорости Uy</param>
 		/// <param name="tmax">время расчета</param>
-		void Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax);
+		double Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax);
 
 		~PU();
 

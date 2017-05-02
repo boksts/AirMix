@@ -76,6 +76,7 @@ namespace AirMix {
         //замер времени
         private double[] seconds(int[] Xdim, int[] Ydim, int N, int calcSystem, object sender, DoWorkEventArgs e) {
             Stopwatch swSeq = new Stopwatch();
+            double timePar =0.0;
             BackgroundWorker bw = sender as BackgroundWorker;
             double[] sec = new double[N];
             bw.ReportProgress(1);
@@ -91,19 +92,22 @@ namespace AirMix {
                 double[] Ux1d = new double[X * Y];
                 double[] Uy1d = new double[X * Y];
 
-               swSeq.Start();
+               
                 switch (calcSystem) {
 
                     case 0:
+                        swSeq.Start();
                         InitSequential();
                         if (rbPU.Checked)
                             pu.Calculation((AirMixSequential.PU.PressureCalcMethod)pressureCalcMethod,
                                (AirMixSequential.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
                                 (AirMixSequential.TurbulenceModel)turbulenceModel, Ux, Uy, tmax);
+                        swSeq.Stop();
+                        sec[k] = swSeq.ElapsedMilliseconds / 1000.0;
                         break;
 
                     case 1:
-                        InitParallel(stressTestingOMP: true, stressTestingCUDA: false);
+                        InitParallel(stressTestingOMP: true);
 
                         for (int j = 0; j < Y; j++)
                             for (int i = 0; i < X; i++) {
@@ -112,9 +116,11 @@ namespace AirMix {
                             }
 
                         if (rbPU.Checked)
-                            parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
+                            timePar = parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
                                 (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
                                 (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, tmax);
+                        
+                        sec[k] = timePar;
                         break;
 
                     case 2:
@@ -127,14 +133,15 @@ namespace AirMix {
                             }
 
                         if (rbPU.Checked)
-                            parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
+                            timePar =  parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
                                 (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
                                 (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, tmax);
+                        sec[k] = timePar;
                         break;
                 }
 
-                swSeq.Stop();
-                sec[k] = swSeq.ElapsedMilliseconds / 1000.0;
+                
+                
             }
 
             return sec;

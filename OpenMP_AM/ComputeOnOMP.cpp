@@ -111,16 +111,20 @@ void ComputeOnOMP::PU::Speeds() {
 }
 
 
-void ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
+double ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
 	
 	this->Ux = Ux;
 	this->Uy = Uy;
+	Time timeObj;
+	double fulltime;
 
 	double t = 0;
-	#pragma omp parallel
-	{
+
+	timeObj.tn();
+
 		do{
-		
+			#pragma omp parallel
+	{
 			switch (pressureMethod) {
 			case Poisson:
 				_Poisson();
@@ -133,9 +137,14 @@ void ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStok
 			Speeds();
 			
 			t += tau;
-		} while (t <= tmax);
 	}
+		} while (t <= tmax);
 	
+	
+	fulltime = timeObj.tk();
+
+	
+
 	//for (int j = 0; j < Y; j++){
 	//	for (int i = 0; i < X; i++)
 
@@ -144,8 +153,8 @@ void ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStok
 	//	fprintf(f, "\n");
 	//}
 
-	//fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f ", X, Y, tmax, h, x0, len, tau);
-
+//	fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f, tmax =%f ", X, Y, tmax, h, x0, len, tau,tmax);
+return fulltime;
 
 }
 

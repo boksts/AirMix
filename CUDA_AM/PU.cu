@@ -6,7 +6,7 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include "MiniWrapForCuda.h"
-
+#include <ctime>
 
 
 #define  b 100.0f;
@@ -14,13 +14,13 @@
 #define BLOCK_SIZE 32
 
 using namespace std;
-/*
-//функции для вычисление времени
+
+//методы для вычисления времени
 class Time{
 	cudaEvent_t Tn, Tk;
-	time_t start, end;
+	float time;
 public:
-	double time;
+	
 
 	Time(){
 		cudaEventCreate(&Tn);
@@ -33,23 +33,15 @@ public:
 	void tn(){
 		cudaEventRecord(Tn, 0);
 	}
-	double tk(){
+	float tk(){
 		cudaEventRecord(Tk, 0);
 		cudaEventSynchronize(Tk);
 		cudaEventElapsedTime(&time, Tn, Tk);
 		return time;
 	}
-	void tstart(){
-		start = clock();
-	}
-	double tend(){
-		end = clock();
-		time = end - start;
-		return time;
-	}
 };
+	
 
-*/
 
 //вычисление давления
 __global__ void kernel_P(int X, int Y, int x0, int l, double *P, double *Ux, double *Uy,double tau,double h){
@@ -123,10 +115,12 @@ int x0, len;
 double tau, h;
 double nuM, ro;
 int sizef;
+Time* timer;
+double fulltime;
 //FILE *f;
 int gridSizeX,gridSizeY;
 
-void Compute(ComputeOnCUDA::PU::PressureCalcMethod pressureMethod, ComputeOnCUDA::PU::NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
+double Compute(ComputeOnCUDA::PU::PressureCalcMethod pressureMethod, ComputeOnCUDA::PU::NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
 	double t = 0;
 
 	//определение числа блоков и потоков
@@ -152,6 +146,11 @@ void Compute(ComputeOnCUDA::PU::PressureCalcMethod pressureMethod, ComputeOnCUDA
 	//копирование значений с устройства в память хоста
 	cudaMemcpy(Ux, UxDev, sizef, cudaMemcpyDeviceToHost);
 	cudaMemcpy(Uy, UyDev, sizef, cudaMemcpyDeviceToHost);
+
+	fulltime=timer->tk();
+
+	return fulltime/1000.0;
+
 	/*
 	for (int j = 0; j < Y; j++){
 		for (int i = 0; i < X; i++)
@@ -177,7 +176,7 @@ void Constructor(double _tau, double _ro, double _nuM, int _x0, int _len, double
 	//f = fopen("res.txt", "w");
 	double *P = new double[X*Y];//давление
 
-	//Time* time = new Time();
+	timer = new Time();
 
 	//начальные условия
 	for (int i = 0; i < X; i++)
@@ -199,7 +198,7 @@ void Constructor(double _tau, double _ro, double _nuM, int _x0, int _len, double
 	cudaMalloc((void**)&PDev, sizef);
 
 	//старт замера времени вычислений
-	//time->tn();
+	timer->tn();
 
 	cudaMemcpy(PDev, P, sizef, cudaMemcpyHostToDevice);
 	//fprintf(f, "Память выделена\n");

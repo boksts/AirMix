@@ -21,7 +21,7 @@ public:
 		
 
 
-		void Calculation(PressureCalcMethod pressureCalcMethod, NavierStokesCalcMethod navierStokesCalcMethod, double* Ux, double* Uy, double tmax);
+		double Calculation(PressureCalcMethod pressureCalcMethod, NavierStokesCalcMethod navierStokesCalcMethod, double* Ux, double* Uy, double tmax);
 
 		PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y);
 		~PU();

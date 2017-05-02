@@ -35,10 +35,11 @@ AirMixParallel::PU::~PU() {
 
 }
 
-void AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax) {
+double AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax) {
 
 	this->Ux = Ux;
 	this->Uy = Uy;
+	double time;
 
 	_Ux = new double[X*Y];
 	_Uy = new double[X*Y];
@@ -49,10 +50,10 @@ void AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcMet
 
 	switch (ppt) {
 	case PPT::OpenMP:
-		computeOnOMP->Calculation(static_cast<ComputeOnOMP::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnOMP::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, tmax);
+		time = computeOnOMP->Calculation(static_cast<ComputeOnOMP::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnOMP::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, tmax);
 		break;
 	case PPT::CUDA:
-		computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnCUDA::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, tmax);		break;
+		time = computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnCUDA::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, tmax);		
 		break;
 	}
 
@@ -60,6 +61,8 @@ void AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcMet
 	//копирование результата из неуправляемого кода в управляемый
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Ux, Ux, 0, X*Y);
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Uy, Uy, 0, X*Y);
+
+	return time;
 
 }
 
