@@ -5,16 +5,33 @@
 
 ComputeOnCUDA::PU::PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y) {
 
-	Constructor(tau, ro, nuM, x0, len, h, X, Y);
+	ConstructorPU(tau, ro, nuM, x0, len, h, X, Y);
 }
 
 
 ComputeOnCUDA::PU::~PU() {
-	Destructor();
+	DestructorPU();
 }
 double ComputeOnCUDA::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double* Ux, double* Uy, double tmax) {
-	 return Compute(pressureMethod, navierStokesMethod,Ux, Uy, tmax);
+	return ComputePU(pressureMethod, navierStokesMethod, Ux, Uy, tmax);
 }
 
+
+
+ComputeOnCUDA::WPsi::WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y, double *Ux, double *Uy) {
+	ConstructorWPsi(tau, nuM, x0, len, h, X, Y,Ux,Uy);
+}
+
+double ComputeOnCUDA::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, double* Ux, double* Uy, double tmax) {
+	return ComputeWPsi(hcm, tm, Ux, Uy, tmax);
+
+}
+
+
+
+
+ComputeOnCUDA::WPsi::~WPsi() {
+	DestructorWPsi();
+}
 
 

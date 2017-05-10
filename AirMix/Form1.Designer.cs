@@ -40,6 +40,7 @@ namespace AirMix {
             System.Windows.Forms.Label label2;
             System.Windows.Forms.Label label1;
             System.Windows.Forms.Label label12;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btnCalculate = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.rbMissingTurb = new System.Windows.Forms.RadioButton();
@@ -186,18 +187,18 @@ namespace AirMix {
             label4.AutoSize = true;
             label4.Location = new System.Drawing.Point(367, 121);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(145, 17);
+            label4.Size = new System.Drawing.Size(160, 17);
             label4.TabIndex = 27;
-            label4.Text = "Скорость потока №2";
+            label4.Text = "Скорость потока снизу";
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Location = new System.Drawing.Point(367, 93);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(145, 17);
+            label3.Size = new System.Drawing.Size(161, 17);
             label3.TabIndex = 26;
-            label3.Text = "Скорость потока №1";
+            label3.Text = "Скорость потока слева";
             // 
             // label2
             // 
@@ -822,7 +823,7 @@ namespace AirMix {
             // 
             // tbUyMax
             // 
-            this.tbUyMax.Location = new System.Drawing.Point(518, 121);
+            this.tbUyMax.Location = new System.Drawing.Point(534, 121);
             this.tbUyMax.Name = "tbUyMax";
             this.tbUyMax.Size = new System.Drawing.Size(43, 22);
             this.tbUyMax.TabIndex = 25;
@@ -830,7 +831,7 @@ namespace AirMix {
             // 
             // tbUxMax
             // 
-            this.tbUxMax.Location = new System.Drawing.Point(518, 93);
+            this.tbUxMax.Location = new System.Drawing.Point(534, 93);
             this.tbUxMax.Name = "tbUxMax";
             this.tbUxMax.Size = new System.Drawing.Size(43, 22);
             this.tbUxMax.TabIndex = 24;
@@ -893,6 +894,7 @@ namespace AirMix {
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.gbOutput);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Моделирование смешивания потоков воздуха";

@@ -34,6 +34,7 @@ namespace AirMix {
        private AirMixSequential.PU pu;
        private AirMixSequential.WPsi wpsi;
        private AirMixParallel.PU parPU;
+       private AirMixParallel.WPsi parWPsi;
 
        private GraphicsForm grForm;
        private OutputForm outForm;

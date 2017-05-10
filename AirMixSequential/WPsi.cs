@@ -46,7 +46,7 @@ namespace AirMixSequential {
         /// <param name="h">шаг по сетке</param>
         /// <param name="X">число точек по оси Х</param>
         ///  <param name="Y">число точек по оси У</param>
-        public WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y) {
+        public WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y,double[,] Ux, double[,] Uy) {
             this.nuM = nuM;
             this.tau = tau;
             this.h = h;
@@ -57,6 +57,9 @@ namespace AirMixSequential {
             psi = new double[X, Y];
             w = new double[X, Y];  
             nuT = new double[X, Y];
+
+            this.Ux = Ux;
+            this.Uy = Uy;
             
             Init();
             turb = new Turbulation(X, Y, h, tau, nuM); 
@@ -65,16 +68,9 @@ namespace AirMixSequential {
         ///<summary>Расчет поля скоростей</summary>
         /// <param name="hcm">схема расчета уравнения Гельмгольца</param>
         ///  <param name="tm">модель турбулентности (turbulenceModel = 0 если турбулентность не расчитывается)</param>
-        ///  <param name="Ux">скорости Ux</param>
-        ///  <param name="Uy">скорости Uy</param>
         /// <param name="tmax">время расчета</param>
-        public void Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm,
-            double[,] Ux, double[,] Uy, double tmax) {
-           
-            this.Ux = Ux;
-            this.Uy = Uy;
-
-            double t = 0;
+        public void Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, double tmax) {
+           double t = 0;
             do {
                 if (tm != 0) //turbulenceModel == 0 если турбулентность не расчитывается
                     nuT = turb.Calculate(tm, Ux, Uy);

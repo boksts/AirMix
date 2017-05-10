@@ -11,8 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ComputeOnOMP.cpp" />
+    <ClCompile Include="OMP_PU.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OMP_WPsi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComputeOnOMP.h" />

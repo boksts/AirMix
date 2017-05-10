@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="PU.cu" />
+    <CudaCompile Include="WPsi.cu" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B4FD506C-1AC9-41B7-95C4-271161D55818}</ProjectGuid>

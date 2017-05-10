@@ -45,7 +45,7 @@
             this.tbc.Location = new System.Drawing.Point(12, 12);
             this.tbc.Name = "tbc";
             this.tbc.SelectedIndex = 0;
-            this.tbc.Size = new System.Drawing.Size(843, 497);
+            this.tbc.Size = new System.Drawing.Size(843, 452);
             this.tbc.TabIndex = 0;
             // 
             // tpUx
@@ -75,12 +75,11 @@
             // 
             // tpUy
             // 
-            this.tpUy.Controls.Add(this.btnSaveFileUy);
             this.tpUy.Controls.Add(this.rtbUy);
             this.tpUy.Location = new System.Drawing.Point(4, 25);
             this.tpUy.Name = "tpUy";
             this.tpUy.Padding = new System.Windows.Forms.Padding(3);
-            this.tpUy.Size = new System.Drawing.Size(835, 468);
+            this.tpUy.Size = new System.Drawing.Size(835, 423);
             this.tpUy.TabIndex = 1;
             this.tpUy.Text = "Скорости Uy";
             this.tpUy.UseVisualStyleBackColor = true;
@@ -88,7 +87,7 @@
             // btnSaveFileUy
             // 
             this.btnSaveFileUy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveFileUy.Location = new System.Drawing.Point(677, 423);
+            this.btnSaveFileUy.Location = new System.Drawing.Point(703, 470);
             this.btnSaveFileUy.Name = "btnSaveFileUy";
             this.btnSaveFileUy.Size = new System.Drawing.Size(152, 39);
             this.btnSaveFileUy.TabIndex = 2;
@@ -105,7 +104,7 @@
             this.rtbUy.Location = new System.Drawing.Point(6, 6);
             this.rtbUy.Name = "rtbUy";
             this.rtbUy.ReadOnly = true;
-            this.rtbUy.Size = new System.Drawing.Size(823, 411);
+            this.rtbUy.Size = new System.Drawing.Size(823, 366);
             this.rtbUy.TabIndex = 1;
             this.rtbUy.Text = "";
             this.rtbUy.WordWrap = false;
@@ -115,6 +114,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(867, 521);
+            this.Controls.Add(this.btnSaveFileUy);
             this.Controls.Add(this.tbc);
             this.Name = "OutputForm";
             this.Text = "Значения скоростей";

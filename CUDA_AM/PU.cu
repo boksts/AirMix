@@ -1,7 +1,6 @@
 #pragma once
 
 #include <math.h>
-//#include <time.h>
 #include  <iostream>
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
@@ -9,18 +8,17 @@
 #include <ctime>
 
 
-#define  b 100.0f;
-
+#define  b 100.0f
 #define BLOCK_SIZE 32
 
 using namespace std;
 
-//методы для вычисления времени
+// методы для вычисления времени
 class Time{
 	cudaEvent_t Tn, Tk;
 	float time;
 public:
-	
+
 
 	Time(){
 		cudaEventCreate(&Tn);
@@ -40,8 +38,6 @@ public:
 		return time;
 	}
 };
-	
-
 
 //вычисление давления
 __global__ void kernel_P(int X, int Y, int x0, int l, double *P, double *Ux, double *Uy,double tau,double h){
@@ -52,7 +48,7 @@ __global__ void kernel_P(int X, int Y, int x0, int l, double *P, double *Ux, dou
 		return;
 
 	if ((i>0) && (j>0) && (i<(X - 1)) && (j<(Y - 1))){
-		P[j*X + i] = P[j*X + i] - tau*100.0*(((Ux[(j + 1)*X + i + 1] + Ux[(j - 1)*X + i + 1]) - (Ux[(j - 1)*X + i - 1] + Ux[(j + 1)*X + i - 1]) +
+		P[j*X + i] = P[j*X + i] - tau*b*(((Ux[(j + 1)*X + i + 1] + Ux[(j - 1)*X + i + 1]) - (Ux[(j - 1)*X + i - 1] + Ux[(j + 1)*X + i - 1]) +
 			(Uy[(j + 1)*X + i - 1] + Uy[(j + 1)*X + i + 1]) - (Uy[(j - 1)*X + i - 1] + Uy[(j - 1)*X + i + 1])) / (4.0*h));
 
 
@@ -109,18 +105,18 @@ __global__ void kernel_p(int X, int Y, double *Uxn, double *Uyn, double *Ux, dou
 }
 
 
-double *UxDev = NULL, *UyDev = NULL, *UxnDev = NULL, *UynDev = NULL, *PDev = NULL;
+
+double *UxDev = NULL, *UyDev = NULL, *UxnDev = NULL, *UynDev = NULL,  *PDev;
 int X, Y;
 int x0, len;
 double tau, h;
 double nuM, ro;
 int sizef;
-Time* timer;
 double fulltime;
-//FILE *f;
-int gridSizeX,gridSizeY;
+int gridSizeX, gridSizeY;
+Time* timer;
 
-double Compute(ComputeOnCUDA::PU::PressureCalcMethod pressureMethod, ComputeOnCUDA::PU::NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
+double ComputePU(ComputeOnCUDA::PU::PressureCalcMethod pressureMethod, ComputeOnCUDA::PU::NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
 	double t = 0;
 
 	//определение числа блоков и потоков
@@ -163,7 +159,7 @@ double Compute(ComputeOnCUDA::PU::PressureCalcMethod pressureMethod, ComputeOnCU
 	fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f ", X, Y, tmax, h, x0, len, tau);*/
 }
 
-void Constructor(double _tau, double _ro, double _nuM, int _x0, int _len, double _h, int _X, int _Y){
+void ConstructorPU(double _tau, double _ro, double _nuM, int _x0, int _len, double _h, int _X, int _Y){
 	tau = _tau;
 	ro = _ro;
 	nuM = _nuM;
@@ -234,7 +230,7 @@ void Constructor(double _tau, double _ro, double _nuM, int _x0, int _len, double
 
 }
 
-void Destructor() {
+void DestructorPU() {
 	//fprintf(f, "Память освобождена, файл закрыт\n");
 	//fclose(f);
 	cudaFree(UxDev);

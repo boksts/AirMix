@@ -19,7 +19,7 @@ namespace AirMix.GraficsText {
 
        
         private void btnSaveFile_Click(object sender, EventArgs e) {
-
+            zgcChart.SaveAsBitmap();
         }
 
         public void Graph(double[] data, int N, Color color, string[] dimension, string str = "") {

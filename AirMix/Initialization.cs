@@ -73,7 +73,7 @@ namespace AirMix {
                      ? AirMixSequential.PU.NavierStokesCalcMethod.ExplicitScheme
                      : AirMixSequential.PU.NavierStokesCalcMethod.ImplicitScheme;
 
-                 pu = new AirMixSequential.PU(tau, ro, nuM, x0, len, h, X, Y);
+                 pu = new AirMixSequential.PU(tau, ro, nuM, x0, len, h, X, Y, Ux, Uy);
              }
 
              //расчет в системе "вихрь -функция тока"
@@ -83,7 +83,7 @@ namespace AirMix {
                      ? AirMixSequential.WPsi.HelmholtzCalcMethod.ExplicitScheme
                      : AirMixSequential.WPsi.HelmholtzCalcMethod.ImplicitScheme;
 
-                 wpsi = new AirMixSequential.WPsi(tau, nuM, x0, len, h, X, Y);
+                 wpsi = new AirMixSequential.WPsi(tau, nuM, x0, len, h, X, Y,Ux,Uy);
              }
 
              //выбор модели турбулентности
@@ -97,7 +97,9 @@ namespace AirMix {
 
          void InitParallel(bool stressTestingOMP = false, bool stressTestingCUDA = false) {
 
-             AirMixParallel.PPT ppt; 
+             AirMixParallel.PPT ppt;
+             bool omp = (stressTestingCUDA || stressTestingOMP) ? stressTestingOMP : rbOpenMP.Checked;
+             bool cuda = (stressTestingCUDA || stressTestingOMP) ? stressTestingCUDA : rbCUDA.Checked;
              //расчет в системе "давление - скорость"
              if (rbPU.Checked) {
                  //выбор метода расчета поля давления
@@ -109,11 +111,7 @@ namespace AirMix {
                  navierStokesCalcMethod = (rbNSEquExpScheme.Checked)
                      ? AirMixParallel.PU.NavierStokesCalcMethod.ExplicitScheme
                      : AirMixParallel.PU.NavierStokesCalcMethod.ImplicitScheme;
-
-
-                 bool omp = (stressTestingCUDA || stressTestingOMP) ? stressTestingOMP : rbOpenMP.Checked;
-                 bool cuda = (stressTestingCUDA || stressTestingOMP) ? stressTestingCUDA : rbCUDA.Checked;
-               
+    
                  if (omp)
                     parPU = new AirMixParallel.PU(AirMixParallel.PPT.OpenMP, tau, ro, nuM, x0, len, h, X, Y);
                  if (cuda)
@@ -122,6 +120,25 @@ namespace AirMix {
 
              //расчет в системе "вихрь -функция тока"
              if (rbWPsi.Checked) {
+                 double[] Ux1d = new double[X * Y];
+                 double[] Uy1d = new double[X * Y];
+
+                 for (int j = 0; j < Y; j++)
+                     for (int i = 0; i < X; i++) {
+                         Ux1d[j * X + i] = Ux[i, j];
+                         Uy1d[j * X + i] = Uy[i, j];
+                     }
+
+                 //выбор метода решения уравнения Гельмгольца
+                 helmholtzCalcMethod = (rbHelmEquExpScheme.Checked)
+                     ? AirMixSequential.WPsi.HelmholtzCalcMethod.ExplicitScheme
+                     : AirMixSequential.WPsi.HelmholtzCalcMethod.ImplicitScheme;
+
+                 if (omp)
+                     parWPsi = new AirMixParallel.WPsi(AirMixParallel.PPT.OpenMP, tau, nuM, x0, len, h, X, Y,Ux1d,Uy1d);
+                 if (cuda)
+                     parWPsi = new AirMixParallel.WPsi(AirMixParallel.PPT.CUDA, tau, nuM, x0, len, h, X, Y, Ux1d, Uy1d);
+
              }
 
              //выбор модели турбулентности

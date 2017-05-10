@@ -55,9 +55,9 @@ namespace AirMix {
                 outForm.OutSpeeds(Ux, Uy);
             }
 
-            if (rbCUDA.Checked || rbOpenMP.Checked) {
+           /* if (rbCUDA.Checked || rbOpenMP.Checked) {
                 parPU.Dispose();
-            }
+            }*/
         }
 
         //последовательные вычисления
@@ -77,15 +77,15 @@ namespace AirMix {
                 }
 
                 //расчет в системе "давление - скорость"
-                if (rbPU.Checked)
+                if (rbPU.Checked) 
                     pu.Calculation((AirMixSequential.PU.PressureCalcMethod)pressureCalcMethod,
                         (AirMixSequential.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
-                        (AirMixSequential.TurbulenceModel)turbulenceModel, Ux, Uy, 0.0);
+                        (AirMixSequential.TurbulenceModel)turbulenceModel, 0.0);
 
                 //расчет в системе "вихрь - функция тока"
                 if (rbWPsi.Checked)
                     wpsi.Calculation((AirMixSequential.WPsi.HelmholtzCalcMethod)helmholtzCalcMethod,
-                        (AirMixSequential.TurbulenceModel)turbulenceModel, Ux, Uy, 0.0);
+                        (AirMixSequential.TurbulenceModel)turbulenceModel, 0.0);
 
                 if (cbGraphics.Checked)
                     Thread.Sleep(10);
@@ -119,20 +119,19 @@ namespace AirMix {
 
                 //расчет в системе "давление - скорость"
                 if (rbPU.Checked) {
-                    if (rbCUDA.Checked)
+                    if (rbCUDA.Checked || rbOpenMP.Checked)
                         parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
                             (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
                             (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, 0.0);
 
-                    if (rbOpenMP.Checked)
-                        parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
-                            (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
-                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, 0.0);
                 }
 
 
                 //расчет в системе "вихрь - функция тока"
                 if (rbWPsi.Checked) {
+                    if (rbCUDA.Checked || rbOpenMP.Checked)
+                        parWPsi.Calculation((AirMixParallel.WPsi.HelmholtzCalcMethod) helmholtzCalcMethod,
+                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, 0.0);
 
                 }
 

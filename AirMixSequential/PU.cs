@@ -58,7 +58,7 @@ namespace AirMixSequential {
         /// <param name="h">шаг по сетке</param>
         /// <param name="X">число точек по оси Х</param>
         ///  <param name="Y">число точек по оси У</param>
-        public PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y) {
+        public PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y ,double[,] Ux, double[,] Uy) {
             this.tau = tau;
             this.nuM = nuM;
             this.ro = ro;
@@ -67,6 +67,8 @@ namespace AirMixSequential {
             this.Y = Y;
             this.x0 = x0;
             this.len = len;
+            this.Ux = Ux;
+            this.Uy = Uy;
    
             P = new double[X, Y];
             divU = new double[X, Y];
@@ -92,10 +94,9 @@ namespace AirMixSequential {
         ///  <param name="Uy">скорости Uy</param>
         /// <param name="tmax">время расчета</param>
         public void Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm,
-            TurbulenceModel tm, double[,] Ux, double[,] Uy, double tmax) {
+            TurbulenceModel tm, double tmax) {
 
-            this.Ux = Ux;
-            this.Uy = Uy;
+            
 
             double t = 0;
             do {
