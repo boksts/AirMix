@@ -84,7 +84,7 @@ void ComputeOnOMP::WPsi::Vortex() {
 				- (Ux[j*X + i] - abs(Ux[j*X + i])) / 2.0*(w[j*X + i + 1] - w[j*X + i]) / h
 				- (Uy[j*X + i] + abs(Uy[j*X + i])) / 2.0*(w[j*X + i] - w[(j - 1)*X + i]) / h
 				- (Uy[j*X + i] - abs(Uy[j*X + i])) / 2.0*(w[(j + 1)*X + i] - w[j*X + i]) / h
-				+ (nuM)*(w[j*X + i + 1] + w[j*X + i - 1] + w[(j + 1)*X + i] + w[(j - 1)*X + i] - 4 * w[j*X + i]) / (h * h));
+				+ (nuM)*(w[j*X + i + 1] + w[j*X + i - 1] + w[(j + 1)*X + i] + w[(j - 1)*X + i] - 4 * w[j*X + i]) / (h * h) - g*betta*Temp[i, j]);
 			}
 
 		#pragma omp for schedule(static)
@@ -126,23 +126,24 @@ void ComputeOnOMP::WPsi::Speeds() {
 		}
 }
 
-double ComputeOnOMP::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm,  double *Ux, double *Uy,double tmax) {
+double ComputeOnOMP::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, double *Ux, double *Uy, double *_Temp, double tmax) {
 	this->Ux = Ux;
 	this->Uy = Uy;
+	this->Temp = _Temp;
 	Time timeObj;
 	double fulltime;
-
+	Temperature* temp = new Temperature(tau, nuM, x0, len, h, X, Y);
 	double t = 0;
 
 	timeObj.tn();
 
 	do {
-			Vortex();
-			CurrentFunction();
-			Speeds();
-			Speeds();
+		Temp = temp->CalcTemp(this->Ux, this->Uy, Temp);
+		Vortex();
+		CurrentFunction();
+		Speeds();
 
-			t += tau;
+		t += tau;
 	}
 	while (t <= tmax);
 
@@ -156,7 +157,7 @@ double ComputeOnOMP::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceModel 
 		fprintf(f, "\n");
 	}
 
-		fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f, tmax =%f ", X, Y, tmax, h, x0, len, tau,tmax);*/
+   fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f, tmax =%f ", X, Y, tmax, h, x0, len, tau,tmax);*/
 
 	return fulltime;
 

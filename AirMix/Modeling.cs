@@ -30,9 +30,10 @@ namespace AirMix {
 
             //вывод скоростей графическом виде       
             if (cbGraphics.Checked) {
-                grForm = new GraphicsForm(X, Y, scale: scale);
-                grForm.Show();
-                grForm.Closing += grForm_Closing;
+                    grForm = new GraphicsForm(X, Y, rbSpeeds.Checked, rbTemp.Checked, scale: scale);
+                    grForm.Show();
+                    grForm.Closing += grForm_Closing;
+                      
             }
 
             bool error;
@@ -41,9 +42,11 @@ namespace AirMix {
             while (bgw.IsBusy) {
                 //вывод графики
                 if (cbGraphics.Checked) {
-                    error = grForm.DrawDisplay(Ux, Uy, x0, len);
-                    if (error)
+                    error = grForm.DrawDisplay(Ux, Uy, Temp, x0, len);
+                    if (error) {
                         bgw.CancelAsync();
+                    }
+                        
                 }
                 Application.DoEvents();
             }
@@ -52,7 +55,10 @@ namespace AirMix {
             if (cbTextFile.Checked) {
                 outForm = new OutputForm { X = X, Y = Y };
                 outForm.Show();
-                outForm.OutSpeeds(Ux, Uy);
+                if (rbSpeeds.Checked)
+                    outForm.OutSpeeds(Ux, Uy);
+                if (rbTemp.Checked)
+                    outForm.OutTemp(Temp);
             }
 
            /* if (rbCUDA.Checked || rbOpenMP.Checked) {
@@ -87,9 +93,9 @@ namespace AirMix {
                     wpsi.Calculation((AirMixSequential.WPsi.HelmholtzCalcMethod)helmholtzCalcMethod,
                         (AirMixSequential.TurbulenceModel)turbulenceModel, 0.0);
 
-                if (cbGraphics.Checked)
+               if (cbGraphics.Checked)
                     Thread.Sleep(10);
-            } while (t <= tmax);
+            } while (t < tmax);
         }
 
 
@@ -99,12 +105,14 @@ namespace AirMix {
             double t = 0;
             double[] Ux1d = new double[X * Y];
             double[] Uy1d = new double[X * Y];
+            double[] Temp1d = new double[X * Y];
 
             do {
                 for (int j = 0; j < Y; j++)
                     for (int i = 0; i < X; i++) {
                         Ux1d[j * X + i] = Ux[i, j];
                         Uy1d[j * X + i] = Uy[i, j];
+                        Temp1d[j * X + i] = Temp[i, j];
                     }
 
                 t += tau;
@@ -122,16 +130,15 @@ namespace AirMix {
                     if (rbCUDA.Checked || rbOpenMP.Checked)
                         parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
                             (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
-                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, 0.0);
+                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, Temp1d, 0.0);
 
                 }
-
 
                 //расчет в системе "вихрь - функция тока"
                 if (rbWPsi.Checked) {
                     if (rbCUDA.Checked || rbOpenMP.Checked)
                         parWPsi.Calculation((AirMixParallel.WPsi.HelmholtzCalcMethod) helmholtzCalcMethod,
-                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, 0.0);
+                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, Temp1d, 0.0);
 
                 }
 
@@ -142,6 +149,7 @@ namespace AirMix {
                     for (int i = 0; i < X; i++) {
                         Ux[i, j] = Ux1d[j * X + i];
                         Uy[i, j] = Uy1d[j * X + i];
+                        Temp[i, j] = Temp1d[j * X + i];
                     }
             } while (t <= tmax);
         }

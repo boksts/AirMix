@@ -45,27 +45,22 @@ void ComputeOnOMP::PU::_WeakСompressibility() {
 
 	//давление на границах
 	#pragma omp for schedule(static)
-	for (int i = 1; i<X - 1; i++){
+	for (int i = 0; i<X; i++){
 		P[i] = P[X + i];
 		P[(Y - 1)*X + i] = P[(Y - 2)*X + i];
 	}
 
-	#pragma omp for schedule(static)
-	for (int j = 1; j<Y - 1; j++){
-		P[j*X] = P[1 + j*X];
-		P[j*X + (X - 1)] = P[j*X + (X - 2)];
-	}
 
 	#pragma omp for schedule(static)
 	for (int j = 0; j<Y; j++){
-		P[j*X] = 2 * P[1 + j*X] - P[2 + j*X];//скорость 1 потока
-		P[j*X + (X - 1)] = 2 * P[j*X + (X - 2)] - P[j*X + (X - 3)];//скорость на выходе
+		P[j*X] = 2 * P[1 + j*X] - P[2 + j*X];//1 поток
+		P[j*X + (X - 1)] = 2 * P[j*X + (X - 2)] - P[j*X + (X - 3)];//выход
 	}
 
 	#pragma omp for schedule(static)
 	for (int i = 0; i<X; i++){
 		if ((i >= x0) && (i <= x0 + len))
-			P[(Y - 1)*X + i] = 2 * P[(Y - 2)*X + i] - P[(Y - 3)*X + i];//скорость 2 потока
+			P[(Y - 1)*X + i] = 2 * P[(Y - 2)*X + i] - P[(Y - 3)*X + i];//2 поток
 	}
 }
 
@@ -84,7 +79,7 @@ void ComputeOnOMP::PU::Speeds() {
 			- (Uy[j*X + i] + abs(Uy[j*X + i])) / 2.0 * (Ux[j*X + i] - Ux[(j - 1)*X + i]) / h
 			- (Uy[j*X + i] - abs(Uy[j*X + i])) / 2.0 * (Ux[(j + 1)*X + i] - Ux[j*X + i]) / h
 			- (P[(j + 1)*X + i + 1] + P[(j - 1)*X + i + 1] - P[(j + 1)*X + i - 1] - P[(j - 1)*X + i - 1]) / (4.0 * h*ro)
-			+ nuM*(Ux[j*X + i + 1] + Ux[j*X + i - 1] + Ux[(j - 1)*X + i] + Ux[(j + 1)*X + i] - 4 * Ux[j*X + i]) / (h*h));
+			+ nuM*(Ux[j*X + i + 1] + Ux[j*X + i - 1] + Ux[(j - 1)*X + i] + Ux[(j + 1)*X + i] - 4 * Ux[j*X + i]) / (h*h) - g*betta*Temp[j*X + i]);
 
 	
 	#pragma omp for schedule(static)
@@ -95,7 +90,7 @@ void ComputeOnOMP::PU::Speeds() {
 			- (Uy[j*X + i] + abs(Uy[j*X + i])) / 2.0 * (Uy[j*X + i] - Uy[(j - 1)*X + i]) / h
 			- (Uy[j*X + i] - abs(Uy[j*X + i])) / 2.0 * (Uy[(j + 1)*X + i] - Uy[j*X + i]) / h
 			- (P[(j + 1)*X + i - 1] + P[(j + 1)*X + i + 1] - P[(j - 1)*X + i - 1] - P[(j - 1)*X + i + 1]) / (4.0 * h*ro)
-			+ nuM*(Uy[j*X + i + 1] + Uy[j*X + i - 1] + Uy[(j - 1)*X + i] + Uy[(j + 1)*X + i] - 4 * Uy[j*X + i]) / (h*h));
+			+ nuM*(Uy[j*X + i + 1] + Uy[j*X + i - 1] + Uy[(j - 1)*X + i] + Uy[(j + 1)*X + i] - 4 * Uy[j*X + i]) / (h*h) - g*betta*Temp[j*X + i]);
 
 
 	#pragma omp for schedule(static)
@@ -111,20 +106,21 @@ void ComputeOnOMP::PU::Speeds() {
 }
 
 
-double ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double tmax) {
-	
+double ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double *_Temp, double tmax) {
 	this->Ux = Ux;
 	this->Uy = Uy;
+	this->Temp = _Temp;
 	Time timeObj;
 	double fulltime;
+	Temperature* temp = new Temperature(tau, nuM, x0, len, h, X, Y);
 
 	double t = 0;
 
 	timeObj.tn();
 
-		do{
-			#pragma omp parallel
-	{
+	do {
+		#pragma omp parallel
+		{
 			switch (pressureMethod) {
 			case Poisson:
 				_Poisson();
@@ -134,27 +130,25 @@ double ComputeOnOMP::PU::Calculation(PressureCalcMethod pressureMethod, NavierSt
 				break;
 			}
 
-			Speeds();
-			
-			t += tau;
-	}
-		} while (t <= tmax);
-	
-	
-	fulltime = timeObj.tk();
+			Temp = temp->CalcTemp(this->Ux, this->Uy, Temp);
 
-	
+			Speeds();
+
+			t += tau;
+		}
+	}
+	while (t <= tmax);
+
+	fulltime = timeObj.tk();
 
 	//for (int j = 0; j < Y; j++){
 	//	for (int i = 0; i < X; i++)
-
-
 	//		fprintf(f, "%8.3f ", Ux[j*X+i]);
 	//	fprintf(f, "\n");
 	//}
 
-//	fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f, tmax =%f ", X, Y, tmax, h, x0, len, tau,tmax);
-return fulltime;
+	//	fprintf(f, "\n X=%d ,Y=%d ,tmax=%f ,h=%f ,x0=%d ,len=%d ,tau=%f, tmax =%f ", X, Y, tmax, h, x0, len, tau,tmax);
+	return fulltime;
 
 }
 

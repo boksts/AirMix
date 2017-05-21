@@ -24,7 +24,7 @@ public:
 			ImplicitScheme //
 		};
 
-		double Calculation(PressureCalcMethod pressureCalcMethod, NavierStokesCalcMethod navierStokesCalcMethod, double* Ux, double* Uy, double tmax);
+		double Calculation(PressureCalcMethod pressureCalcMethod, NavierStokesCalcMethod navierStokesCalcMethod, double* Ux, double* Uy, double *Temp, double tmax);
 
 		PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y);
 		~PU();
@@ -40,9 +40,9 @@ public:
 			ImplicitScheme
 		};
 		
-		WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y, double *Ux, double *Uy);
+		WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y, double *Ux,  double *Uy);
 
-		double Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, double* Ux, double* Uy, double tmax);
+		double Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, double* Ux, double* Uy, double *Temp, double tmax);
 
 		~WPsi();
 

@@ -11,6 +11,12 @@
 
 #define _BLOCK_SIZE 32
 
+#define a 0.1f
+#define c 1.0f
+#define g 9.8f
+
+#define betta  0.003665f
+
 using namespace std;
 
 
@@ -41,7 +47,7 @@ public:
 };
 
 //уравнение Гельмгольца (противоточные производные)
-__global__ void kernel_gelmgolca(int X, int Y, double *w, double *wn, double *psi, double *ux, double *uy, double h, double tau, double nuM){
+__global__ void kernel_gelmgolca(int X, int Y, double *w, double *wn, double *psi, double *ux, double *uy, double*Temp, double h, double tau, double nuM){
 	int i = blockIdx.x*blockDim.x + threadIdx.x;
 	int j = blockIdx.y*blockDim.y + threadIdx.y;
 
@@ -66,7 +72,8 @@ __global__ void kernel_gelmgolca(int X, int Y, double *w, double *wn, double *ps
 
 
 		wn[j*X + i] = w[j*X + i] + tau*(-ux[j*X + i] * dux - uy[j*X + i] * duy + nuM*
-			(w[j*X + i + 1] + w[j*X + i - 1] + w[(j + 1)*X + i] + w[(j - 1)*X + i] - 4 * w[j*X + i]) / (h*h));
+			(w[j*X + i + 1] + w[j*X + i - 1] + w[(j + 1)*X + i] + w[(j - 1)*X + i] - 4 * w[j*X + i]) / (h*h)
+			- g*betta*Temp[j*X + i]);
 
 	}
 }
@@ -102,7 +109,21 @@ __global__ void kernel_skorosti(int X, int Y, double *psi, double *ux, double *u
 	}
 
 }
+//переприсваивание
+__global__ void _kernel_pTemp(int X, int Y, int x0, int len, double *Temp, double *Tempn){
+	int i = blockIdx.x*blockDim.x + threadIdx.x;
+	int j = blockIdx.y*blockDim.y + threadIdx.y;
 
+	if ((i<(X - 1)) && (j<(Y - 1)) && (i>0) && (j>0)){
+		Temp[j*X + i] = Tempn[j*X + i];
+
+		if ((i < x0) || (i >= x0 + len))
+			Temp[(Y - 1)*X + i] = Tempn[(Y - 1)*X + i];
+
+		Temp[i] = Tempn[i];
+
+	}
+}
 
 //переприсваивание
 __global__ void kernel_p(int X, int Y, double *psi, double *psin){
@@ -112,8 +133,39 @@ __global__ void kernel_p(int X, int Y, double *psi, double *psin){
 		psi[j*X + i] = psin[j*X + i];
 }
 
+//вычисление температуры
+__global__ void _kernel_temp(int X, int Y, int x0, int len, double *Ux, double *Uy, double *Temp, double *Tempn, double nuM, double h, double tau){
+	int i = blockIdx.x*blockDim.x + threadIdx.x;
+	int j = blockIdx.y*blockDim.y + threadIdx.y;
 
-double *_UxDev = NULL, *_UyDev = NULL, *_UxnDev = NULL, *_UynDev = NULL, *wDev = NULL, *wnDev = NULL, *psiDev = NULL, *psinDev = NULL;
+	if ((i<(X - 1)) && (j<(Y - 1)) && (i>0) && (j>0)){
+		Tempn[j*X + i] = Temp[j*X + i] + tau * (-(Ux[j*X + i] + abs(Ux[j*X + i])) / 2.0 * (Temp[j*X + i] - Temp[j*X + i - 1]) / h
+			- (Ux[j*X + i] - abs(Ux[j*X + i])) / 2.0 * (Temp[j*X + i + 1] - Temp[j*X + i]) / h
+			- (Uy[j*X + i] + abs(Uy[j*X + i])) / 2.0 * (Temp[j*X + i] - Temp[(j - 1)*X + i]) / h
+			- (Uy[j*X + i] - abs(Uy[j*X + i])) / 2.0 * (Temp[(j + 1)*X + i] - Temp[j*X + i]) / h
+			+ c*(nuM)* (Ux[j*X + i + 1] + Ux[j*X + i - 1] + Uy[(j + 1)*X + i] + Uy[(j - 1)*X + i] - 2 * Ux[j*X + i] - 2 * Uy[j*X + i]) /
+			(h * h));
+		
+		Temp[j*X + X - 1] = Tempn[j*X + X - 2];
+	}
+
+	//температура в стенках
+	if ((i<(X - 1)) && (i>0)){
+		//на границе снизу
+		if ((i < x0) || (i >= x0 + len))
+			Tempn[(Y - 1)*X + i] = Temp[(Y - 1)*X + i] +
+			tau*a*a / (h*h)*
+			(Temp[(Y - 1)*X + i + 1] + Temp[(Y - 1)*X + i - 1] + Temp[(Y - 2)*X + i] - 4 * Temp[(Y - 1)*X + i]);
+
+		//на границе сверху
+		Tempn[i] = Temp[i] + tau*a*a / (h*h)*(Temp[i + 1, 0] + Temp[i - 1] + Temp[X + i] - 4 * Temp[i]);
+
+	}
+}
+
+
+
+double *_UxDev = NULL, *_UyDev = NULL, *_UxnDev = NULL, *_UynDev = NULL, *wDev = NULL, *wnDev = NULL, *psiDev = NULL, *psinDev = NULL, *_TempDev=NULL, *_TempnDev;
 int *prDev = NULL;
 int _X, _Y;
 int _x0, _len;
@@ -125,7 +177,7 @@ int _gridSizeX, _gridSizeY;
 _Time* _timer;
 
 
-double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::TurbulenceModel tm,  double *Ux, double *Uy, double tmax) {
+double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::TurbulenceModel tm, double *Ux, double *Uy, double *Temp, double tmax) {
 	double t = 0;
 	
 	//определение числа блоков и потоков
@@ -135,15 +187,19 @@ double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::
 	//копирование значений с хоста в память устройства
 	cudaMemcpy(_UxDev, Ux, _sizef, cudaMemcpyHostToDevice);
 	cudaMemcpy(_UyDev, Uy, _sizef, cudaMemcpyHostToDevice);
+	cudaMemcpy(_TempDev, Temp, _sizef, cudaMemcpyHostToDevice);
 
 	bool flag = false;
 	int *pr = NULL;
 	pr = new int[_X*_Y];
 	
 	do{
+
+		_kernel_temp << <blocks, threads >> >(_X, _Y, _x0, _len, _UxDev, _UyDev, _TempDev, _TempnDev, _nuM, _h, _tau);
+		_kernel_pTemp << <blocks, threads >> >(_X, _Y, _x0, _len, _TempDev, _TempnDev);
 		//запуск ядер устройства
 		kernel_gelmgolca << <blocks, threads >> >(_X, _Y, wDev, wnDev, psiDev,
-			_UxDev, _UyDev, _h, _tau, _nuM);
+			_UxDev, _UyDev, _TempDev, _h, _tau, _nuM);
 		kernel_p << <blocks, threads >> >(_X, _Y, wDev, wnDev);
 		
 		//решение уравнения Пуассона до достижения точности
@@ -177,6 +233,7 @@ double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::
 	//копирование значений с устройства в память хоста
 	cudaMemcpy(Ux, _UxDev, _sizef, cudaMemcpyDeviceToHost);
 	cudaMemcpy(Uy, _UyDev, _sizef, cudaMemcpyDeviceToHost);
+	cudaMemcpy(Temp, _TempDev, _sizef, cudaMemcpyDeviceToHost);
 
 	 _fulltime = _timer->tk();
 	 return _fulltime / 1000.0;
@@ -240,6 +297,8 @@ void ConstructorWPsi(double tau,  double nuM, int x0, int len, double h, int X, 
 	cudaMalloc((void**)&wDev, _sizef);
 	cudaMalloc((void**)&wnDev, _sizef);
 	cudaMalloc((void**)&prDev, sizei);
+	cudaMalloc((void**)&_TempDev, _sizef);
+	cudaMalloc((void**)&_TempnDev, _sizef);
 
 	//старт замера времени вычислений
 	_timer->tn();
@@ -259,5 +318,7 @@ void DestructorWPsi() {
 	cudaFree(psiDev);
 	cudaFree(psinDev);
 	cudaFree(prDev);
+	cudaFree(_TempDev);
+	cudaFree(_TempnDev);
 
 }

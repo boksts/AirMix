@@ -20,6 +20,7 @@ namespace AirMix {
    partial class Form1 : Form {
        private double[,] Ux;
        private double[,] Uy;
+       private double[,] Temp;
        private int X;
        private int Y;
        private int len;
@@ -52,7 +53,6 @@ namespace AirMix {
            InitializeComponent();
            pbImage.Image = Image.FromFile("Image.jpg");
        }
-
 
        private void btnCalculate_Click(object sender, EventArgs e) {
            if (rbModeling.Checked)
@@ -92,7 +92,6 @@ namespace AirMix {
                lblPrc.Text = "Расчеты выполняются ...";
            }
        }
-
        private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
            string str = e.Cancelled ? "Расчет отменен!" : "Расчет завершен!";
            lblPrc.Text = "";
@@ -103,7 +102,6 @@ namespace AirMix {
            MessageBox.Show(str);
         
        }
-
        private void bgw_DoWork(object sender, DoWorkEventArgs e) {
            if (rbModeling.Checked) {
                if (rbSeq.Checked)
@@ -113,13 +111,10 @@ namespace AirMix {
            }
            if (rbStressTesting.Checked) {
                StressTestingCalculate(sender, e);
-           }
-          
+           }    
            
        }
-
        //===================================================================
-
 
        private void cbGraphics_CheckedChanged(object sender, EventArgs e) {
            nudScale.Enabled = cbGraphics.Checked;
@@ -137,7 +132,6 @@ namespace AirMix {
            gbWPsi.Enabled = rbWPsi.Checked;
        }
 
-
        private void rbStressTesting_CheckedChanged(object sender, EventArgs e) {
            gbStressTesting.Enabled = rbStressTesting.Checked;
            gbModeling.Enabled = gbOutput.Enabled = !rbStressTesting.Checked;
@@ -146,20 +140,9 @@ namespace AirMix {
 
        }
 
-
        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
            bgw.CancelAsync();
        }
-
-       private void groupBox6_Enter(object sender, EventArgs e) {
-
-       }
-
-       private void tabPage3_Click(object sender, EventArgs e) {
-
-       }
-
-   
     
    }
 }

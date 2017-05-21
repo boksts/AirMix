@@ -24,6 +24,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChartForm));
             this.zgcChart = new ZedGraph.ZedGraphControl();
             this.btnSaveFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -61,6 +62,9 @@
             this.ClientSize = new System.Drawing.Size(822, 572);
             this.Controls.Add(this.btnSaveFile);
             this.Controls.Add(this.zgcChart);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "ChartForm";
             this.Text = "Нагрузочное тестирование";
             this.ResumeLayout(false);

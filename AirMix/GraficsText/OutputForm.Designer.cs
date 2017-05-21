@@ -23,16 +23,20 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OutputForm));
             this.tbc = new System.Windows.Forms.TabControl();
             this.tpUx = new System.Windows.Forms.TabPage();
             this.rtbUx = new System.Windows.Forms.RichTextBox();
             this.tpUy = new System.Windows.Forms.TabPage();
-            this.btnSaveFileUy = new System.Windows.Forms.Button();
             this.rtbUy = new System.Windows.Forms.RichTextBox();
-            this.sfdSpeeds = new System.Windows.Forms.SaveFileDialog();
+            this.tpTemp = new System.Windows.Forms.TabPage();
+            this.rtbTemp = new System.Windows.Forms.RichTextBox();
+            this.btnSaveFileUy = new System.Windows.Forms.Button();
+            this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.tbc.SuspendLayout();
             this.tpUx.SuspendLayout();
             this.tpUy.SuspendLayout();
+            this.tpTemp.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbc
@@ -42,6 +46,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbc.Controls.Add(this.tpUx);
             this.tbc.Controls.Add(this.tpUy);
+            this.tbc.Controls.Add(this.tpTemp);
             this.tbc.Location = new System.Drawing.Point(12, 12);
             this.tbc.Name = "tbc";
             this.tbc.SelectedIndex = 0;
@@ -54,7 +59,7 @@
             this.tpUx.Location = new System.Drawing.Point(4, 25);
             this.tpUx.Name = "tpUx";
             this.tpUx.Padding = new System.Windows.Forms.Padding(3);
-            this.tpUx.Size = new System.Drawing.Size(835, 468);
+            this.tpUx.Size = new System.Drawing.Size(835, 423);
             this.tpUx.TabIndex = 0;
             this.tpUx.Text = "Скорости Ux";
             this.tpUx.UseVisualStyleBackColor = true;
@@ -84,6 +89,44 @@
             this.tpUy.Text = "Скорости Uy";
             this.tpUy.UseVisualStyleBackColor = true;
             // 
+            // rtbUy
+            // 
+            this.rtbUy.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbUy.Font = new System.Drawing.Font("Courier New", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rtbUy.Location = new System.Drawing.Point(6, 6);
+            this.rtbUy.Name = "rtbUy";
+            this.rtbUy.ReadOnly = true;
+            this.rtbUy.Size = new System.Drawing.Size(823, 411);
+            this.rtbUy.TabIndex = 1;
+            this.rtbUy.Text = "";
+            this.rtbUy.WordWrap = false;
+            // 
+            // tpTemp
+            // 
+            this.tpTemp.Controls.Add(this.rtbTemp);
+            this.tpTemp.Location = new System.Drawing.Point(4, 25);
+            this.tpTemp.Name = "tpTemp";
+            this.tpTemp.Size = new System.Drawing.Size(835, 423);
+            this.tpTemp.TabIndex = 2;
+            this.tpTemp.Text = "Поле температур";
+            this.tpTemp.UseVisualStyleBackColor = true;
+            // 
+            // rtbTemp
+            // 
+            this.rtbTemp.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbTemp.Font = new System.Drawing.Font("Courier New", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rtbTemp.Location = new System.Drawing.Point(6, 6);
+            this.rtbTemp.Name = "rtbTemp";
+            this.rtbTemp.ReadOnly = true;
+            this.rtbTemp.Size = new System.Drawing.Size(823, 411);
+            this.rtbTemp.TabIndex = 2;
+            this.rtbTemp.Text = "";
+            this.rtbTemp.WordWrap = false;
+            // 
             // btnSaveFileUy
             // 
             this.btnSaveFileUy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -95,20 +138,6 @@
             this.btnSaveFileUy.UseVisualStyleBackColor = true;
             this.btnSaveFileUy.Click += new System.EventHandler(this.btnSaveFileUy_Click);
             // 
-            // rtbUy
-            // 
-            this.rtbUy.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbUy.Font = new System.Drawing.Font("Courier New", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rtbUy.Location = new System.Drawing.Point(6, 6);
-            this.rtbUy.Name = "rtbUy";
-            this.rtbUy.ReadOnly = true;
-            this.rtbUy.Size = new System.Drawing.Size(823, 366);
-            this.rtbUy.TabIndex = 1;
-            this.rtbUy.Text = "";
-            this.rtbUy.WordWrap = false;
-            // 
             // OutputForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -116,11 +145,13 @@
             this.ClientSize = new System.Drawing.Size(867, 521);
             this.Controls.Add(this.btnSaveFileUy);
             this.Controls.Add(this.tbc);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "OutputForm";
-            this.Text = "Значения скоростей";
+            this.Text = "Числовые данные";
             this.tbc.ResumeLayout(false);
             this.tpUx.ResumeLayout(false);
             this.tpUy.ResumeLayout(false);
+            this.tpTemp.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -133,6 +164,8 @@
         private System.Windows.Forms.TabPage tpUy;
         private System.Windows.Forms.Button btnSaveFileUy;
         private System.Windows.Forms.RichTextBox rtbUy;
-        private System.Windows.Forms.SaveFileDialog sfdSpeeds;
+        private System.Windows.Forms.SaveFileDialog sfd;
+        private System.Windows.Forms.TabPage tpTemp;
+        private System.Windows.Forms.RichTextBox rtbTemp;
     }
 }

@@ -5,6 +5,8 @@
 #include "..\OpenMP_AM\ComputeOnOMP.h"
 #include "..\OpenMP_AM\OMP_PU.cpp"
 #include "..\OpenMP_AM\OMP_WPsi.cpp"
+#include "..\OpenMP_AM\Temperature.cpp"
+
 
 #include "..\CUDA_AM\ComputeOnCUDA.h"
 #include "..\CUDA_AM\ComputeOnCUDA.cpp"
@@ -41,9 +43,10 @@ namespace AirMixParallel {
 	private:
 		array<double> ^Ux;
 		array<double> ^Uy;
+		array<double> ^Temp;
 		int X;
 		int Y;
-		double *_Ux, *_Uy;
+		double *_Ux, *_Uy, *_Temp;
 
 		ComputeOnOMP::PU *computeOnOMP;
 		ComputeOnCUDA::PU *computeOnCUDA;
@@ -94,7 +97,7 @@ namespace AirMixParallel {
 		///  <param name="Ux">скорости Ux</param>
 		///  <param name="Uy">скорости Uy</param>
 		/// <param name="tmax">время расчета</param>
-		double Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax);
+		double Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, array<double> ^Temp, double tmax);
 
 		~PU();
 
@@ -106,9 +109,10 @@ namespace AirMixParallel {
 	private:
 		array<double> ^Ux;
 		array<double> ^Uy;
+		array<double> ^Temp;
 		int X;
 		int Y;
-		double *_Ux, *_Uy;
+		double *_Ux, *_Uy, *_Temp;
 
 		ComputeOnOMP::WPsi *computeOnOMP;
 		ComputeOnCUDA::WPsi *computeOnCUDA;
@@ -141,7 +145,7 @@ namespace AirMixParallel {
 		/// <param name="hcm">схема расчета уравнения Гельмгольца</param>
 		///  <param name="tm">модель турбулентности (turbulenceModel = 0 если турбулентность не расчитывается)</param>
 		/// <param name="tmax">время расчета</param>
-		double Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax);
+		double Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, array<double> ^Temp, double tmax);
 
 		~WPsi();
 

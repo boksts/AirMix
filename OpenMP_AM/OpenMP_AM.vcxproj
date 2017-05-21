@@ -14,6 +14,7 @@
     <ClCompile Include="OMP_PU.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OMP_WPsi.cpp" />
+    <ClCompile Include="Temperature.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComputeOnOMP.h" />

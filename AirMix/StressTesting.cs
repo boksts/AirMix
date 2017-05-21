@@ -91,7 +91,7 @@ namespace AirMix {
 
                 double[] Ux1d = new double[X * Y];
                 double[] Uy1d = new double[X * Y];
-
+                double[] Temp1d = new double[X * Y];
                
                 switch (calcSystem) {
 
@@ -117,15 +117,16 @@ namespace AirMix {
                             for (int i = 0; i < X; i++) {
                                 Ux1d[j * X + i] = Ux[i, j];
                                 Uy1d[j * X + i] = Uy[i, j];
+                                Temp1d[j * X + i] = Temp[i, j];
                             }
 
                         if (rbPU.Checked)
                             timePar = parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
                                 (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
-                                (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, tmax);
+                                (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d,Temp1d, tmax);
                         if (rbWPsi.Checked)
                             timePar = parWPsi.Calculation((AirMixParallel.WPsi.HelmholtzCalcMethod)helmholtzCalcMethod,
-                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, tmax);
+                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, Temp1d, tmax);
                         
                         sec[k] = timePar;
                         break;
@@ -137,16 +138,17 @@ namespace AirMix {
                             for (int i = 0; i < X; i++) {
                                 Ux1d[j * X + i] = Ux[i, j];
                                 Uy1d[j * X + i] = Uy[i, j];
+                                Temp1d[j * X + i] = Temp[i, j];
                             }
 
                         if (rbPU.Checked)
                             timePar =  parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
                                 (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
-                                (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, tmax);
+                                (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, Temp1d, tmax);
 
                         if (rbWPsi.Checked)
                             timePar = parWPsi.Calculation((AirMixParallel.WPsi.HelmholtzCalcMethod)helmholtzCalcMethod,
-                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, tmax);
+                            (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, Temp1d, tmax);
 
                         sec[k] = timePar;
                         break;

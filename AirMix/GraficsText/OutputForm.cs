@@ -13,22 +13,26 @@ namespace AirMix.Grafics {
     public partial class OutputForm : Form {
         public int X { get; set; }
         public int Y { get; set; }
-        private double[,] Ux;
-        private double[,] Uy;
+
 
         public OutputForm() {
             InitializeComponent();
         }
 
         public void OutSpeeds(double[,] Ux, double[,] Uy) {
-            this.Ux = Ux;
-            this.Uy = Uy;
-            OutSpeedsDisplay(Ux, rtbUx);
-            OutSpeedsDisplay(Uy, rtbUy);         
+            OutDisplay(Ux, rtbUx);
+            OutDisplay(Uy, rtbUy);
+            tbc.TabPages.Remove(tpTemp);
+        }
+
+        public void OutTemp(double[,] Temp) {
+            OutDisplay(Temp, rtbTemp);
+            tbc.TabPages.Remove(tpUx);
+            tbc.TabPages.Remove(tpUy);
         }
 
         //вывод значений скоростей на экран
-        private void OutSpeedsDisplay(double[,] mass, RichTextBox rtb) {
+        private void OutDisplay(double[,] mass, RichTextBox rtb) {
             string razd;
             for (int j = 0; j < Y; j++) {
                 for (int i = 0; i < X; i++) {
@@ -41,22 +45,23 @@ namespace AirMix.Grafics {
 
         //запись значений скоростей в файл
         private void OutSpeedsFile(RichTextBox rtb, string descr) {
-            sfdSpeeds.Filter = "Текстовый файл|*.txt";
-            if (sfdSpeeds.ShowDialog() != DialogResult.OK)
+            sfd.Filter = "Текстовый файл|*.txt";
+            if (sfd.ShowDialog() != DialogResult.OK)
                 return;
-            var swU = new StreamWriter(sfdSpeeds.FileName); 
-            swU.WriteLine(descr);
-            swU.Write(rtb.Text);
-            swU.Close();
+            var sw = new StreamWriter(sfd.FileName); 
+            sw.WriteLine(descr);
+            sw.Write(rtb.Text);
+            sw.Close();
         }
 
-
-        private void btnSaveFileUx_Click(object sender, EventArgs e) {
-            OutSpeedsFile(rtbUx, "Скорости Ux");
-        }
 
         private void btnSaveFileUy_Click(object sender, EventArgs e) {
-            OutSpeedsFile(rtbUy, "Скорости Uy");
+            if (tpUx.CanFocus)
+                OutSpeedsFile(rtbUx, "Скорости Ux");
+            if (tpUy.CanFocus)
+                OutSpeedsFile(rtbUy, "Скорости Uy");
+            if (tpTemp.CanFocus)
+                OutSpeedsFile(rtbTemp, "Температура");
         }
     }
 }

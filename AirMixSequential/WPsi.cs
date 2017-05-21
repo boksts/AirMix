@@ -18,6 +18,7 @@ namespace AirMixSequential {
         private readonly int len;
 
         private Turbulation turb;
+        private Temperature temp;
 
         //функция тока
         private double[,] psi;
@@ -27,6 +28,12 @@ namespace AirMixSequential {
         private double[,] nuT;
         private double[,] Ux;
         private double[,] Uy;
+        private double[,] Temp;
+
+        //ускорение свободного падения
+        const double g = 9.8;
+        //коэффициент объемного расширения воздуха
+        private readonly double betta = 3.665 * Math.Pow(10.0, -3.0);
 
         /// <summary>
         /// Схема расчета уравнения Гельмгольца
@@ -46,7 +53,7 @@ namespace AirMixSequential {
         /// <param name="h">шаг по сетке</param>
         /// <param name="X">число точек по оси Х</param>
         ///  <param name="Y">число точек по оси У</param>
-        public WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y,double[,] Ux, double[,] Uy) {
+        public WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y, double[,] Ux, double[,] Uy, double[,] Temp) {
             this.nuM = nuM;
             this.tau = tau;
             this.h = h;
@@ -62,7 +69,8 @@ namespace AirMixSequential {
             this.Uy = Uy;
             
             Init();
-            turb = new Turbulation(X, Y, h, tau, nuM); 
+            turb = new Turbulation(X, Y, h, tau, nuM);
+            temp = new Temperature(tau, nuM, x0, len, h, X, Y, Ux, Uy, Temp, nuT);   
         }
 
         ///<summary>Расчет поля скоростей</summary>
@@ -74,11 +82,11 @@ namespace AirMixSequential {
             do {
                 if (tm != 0) //turbulenceModel == 0 если турбулентность не расчитывается
                     nuT = turb.Calculate(tm, Ux, Uy);
-
+                
+                Temp = temp.CalcTemp();
                 Vortex();
                 CurrentFunction();
                 Speeds();
-
                 t += tau;
             } while (t <= tmax);
         }
@@ -154,7 +162,8 @@ namespace AirMixSequential {
                         - (Ux[i, j] - Math.Abs(Ux[i, j]))/2.0*(w[i + 1, j] - w[i, j])/h
                         - (Uy[i, j] + Math.Abs(Uy[i, j]))/2.0*(w[i, j] - w[i, j - 1])/h
                         - (Uy[i, j] - Math.Abs(Uy[i, j]))/2.0*(w[i, j + 1] - w[i, j])/h
-                        + (nuM + nuT[i, j])*(w[i + 1, j] + w[i - 1, j] + w[i, j + 1] + w[i, j - 1] - 4.0 * w[i, j]) / (h * h));
+                        + (nuM + nuT[i, j])*(w[i + 1, j] + w[i - 1, j] + w[i, j + 1] + w[i, j - 1] - 4.0 * w[i, j]) / (h * h)
+                        - g*betta*Temp[i,j]);
                 }
 
             for (int j = 1; j < Y - 1; j++)

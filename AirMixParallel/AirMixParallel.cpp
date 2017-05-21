@@ -35,25 +35,28 @@ AirMixParallel::PU::~PU() {
 
 }
 
-double AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax) {
+double AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, array<double> ^Temp, double tmax) {
 
 	this->Ux = Ux;
 	this->Uy = Uy;
+	this->Temp = Temp;
 	double time;
 
 	_Ux = new double[X*Y];
 	_Uy = new double[X*Y];
+	_Temp = new double[X*Y];
 
 	//копирование начальных данных из управляемого кода в неуправляемый
 	System::Runtime::InteropServices::Marshal::Copy(Ux, 0, (System::IntPtr)_Ux, X*Y);
 	System::Runtime::InteropServices::Marshal::Copy(Uy, 0, (System::IntPtr)_Uy, X*Y);
+	System::Runtime::InteropServices::Marshal::Copy(Temp, 0, (System::IntPtr)_Temp, X*Y);
 
 	switch (ppt) {
 	case PPT::OpenMP:
-		time = computeOnOMP->Calculation(static_cast<ComputeOnOMP::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnOMP::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, tmax);
+		time = computeOnOMP->Calculation(static_cast<ComputeOnOMP::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnOMP::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, _Temp, tmax);
 		break;
 	case PPT::CUDA:
-		time = computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnCUDA::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, tmax);		
+		time = computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::PU::PressureCalcMethod>(pcm), static_cast<ComputeOnCUDA::PU::NavierStokesCalcMethod>(nscm), _Ux, _Uy, _Temp, tmax);
 		break;
 	}
 
@@ -61,6 +64,7 @@ double AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcM
 	//копирование результата из неуправляемого кода в управляемый
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Ux, Ux, 0, X*Y);
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Uy, Uy, 0, X*Y);
+	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Temp, Temp, 0, X*Y);
 
 	return time;
 
@@ -73,6 +77,7 @@ AirMixParallel::WPsi::WPsi(PPT _ppt, double tau, double nuM, int x0, int len, do
 	this->Y = Y;
 	this->Ux = Ux;
 	this->Uy = Uy;
+
 	ppt = _ppt;
 	_Ux = new double[X*Y];
 	_Uy = new double[X*Y];
@@ -105,25 +110,18 @@ AirMixParallel::WPsi::~WPsi() {
 
 }
 
-double AirMixParallel::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, double tmax) {
+double AirMixParallel::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, array<double> ^Temp, double tmax) {
 	double time;
-
-	/*this->Ux = Ux;
-	this->Uy = Uy;
-
-	_Ux = new double[X*Y];
-	_Uy = new double[X*Y];
-
-	//копирование начальных данных из управляемого кода в неуправляемый
-	System::Runtime::InteropServices::Marshal::Copy(Ux, 0, (System::IntPtr)_Ux, X*Y);
-	System::Runtime::InteropServices::Marshal::Copy(Uy, 0, (System::IntPtr)_Uy, X*Y);*/
+	this->Temp = Temp;
+	_Temp = new double[X*Y];
+	System::Runtime::InteropServices::Marshal::Copy(Temp, 0, (System::IntPtr)_Temp, X*Y);
 
 	switch (ppt) {
 	case PPT::OpenMP:
-		time = computeOnOMP->Calculation(static_cast<ComputeOnOMP::WPsi::HelmholtzCalcMethod>(hcm), static_cast<ComputeOnOMP::TurbulenceModel>(tm), _Ux, _Uy, tmax);
+		time = computeOnOMP->Calculation(static_cast<ComputeOnOMP::WPsi::HelmholtzCalcMethod>(hcm), static_cast<ComputeOnOMP::TurbulenceModel>(tm), _Ux, _Uy, _Temp, tmax);
 		break;
 	case PPT::CUDA:
-		time = computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::WPsi::HelmholtzCalcMethod>(hcm), static_cast<ComputeOnCUDA::TurbulenceModel>(tm), _Ux, _Uy, tmax);
+		time = computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::WPsi::HelmholtzCalcMethod>(hcm), static_cast<ComputeOnCUDA::TurbulenceModel>(tm), _Ux, _Uy, _Temp, tmax);
 		break;
 	}
 
@@ -131,6 +129,7 @@ double AirMixParallel::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceMode
 	//копирование результата из неуправляемого кода в управляемый
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Ux, Ux, 0, X*Y);
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Uy, Uy, 0, X*Y);
+	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Temp, Temp, 0, X*Y);
 
 	return time;
 
