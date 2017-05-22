@@ -10,6 +10,9 @@ AirMixParallel::PU::PU(PPT _ppt, double tau, double ro, double nuM, int  x0, int
 	this->Y = Y;
 	ppt = _ppt;
 
+	_Ux = new double[X*Y];
+	_Uy = new double[X*Y];
+	_Temp = new double[X*Y];
 
 	switch (ppt) {
 	case PPT::OpenMP:
@@ -21,30 +24,8 @@ AirMixParallel::PU::PU(PPT _ppt, double tau, double ro, double nuM, int  x0, int
 	}
 }
 
-AirMixParallel::PU::~PU() {
-	delete[] _Ux;
-	delete[] _Uy;
-	switch (ppt) {
-		case PPT::OpenMP:
-		computeOnOMP->~PU();
-		break;
-		case PPT::CUDA:
-		computeOnCUDA->~PU();
-		break;
-	}
-
-}
 
 double AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, array<double> ^Temp, double tmax) {
-
-	this->Ux = Ux;
-	this->Uy = Uy;
-	this->Temp = Temp;
-	double time;
-
-	_Ux = new double[X*Y];
-	_Uy = new double[X*Y];
-	_Temp = new double[X*Y];
 
 	//копирование начальных данных из управл€емого кода в неуправл€емый
 	System::Runtime::InteropServices::Marshal::Copy(Ux, 0, (System::IntPtr)_Ux, X*Y);
@@ -60,27 +41,45 @@ double AirMixParallel::PU::Calculation(PressureCalcMethod pcm, NavierStokesCalcM
 		break;
 	}
 
-
 	//копирование результата из неуправл€емого кода в управл€емый
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Ux, Ux, 0, X*Y);
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Uy, Uy, 0, X*Y);
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Temp, Temp, 0, X*Y);
 
 	return time;
-
 }
 
 
-AirMixParallel::WPsi::WPsi(PPT _ppt, double tau, double nuM, int x0, int len, double h, int X, int Y, array<double> ^Ux, array<double> ^Uy) {
+AirMixParallel::PU::~PU() {
 
+	delete[] _Ux;
+	delete[] _Uy;
+	delete[] _Temp;
+
+	switch (ppt) {
+		case PPT::OpenMP:
+			computeOnOMP->~PU();
+			delete computeOnOMP;
+		break;
+		case PPT::CUDA:
+			computeOnCUDA->~PU();
+			delete computeOnCUDA;
+		break;
+	}
+}
+
+
+/*==========================================================================*/
+
+AirMixParallel::WPsi::WPsi(PPT _ppt, double tau, double nuM, int x0, int len, double h, int X, int Y, array<double> ^Ux, array<double> ^Uy) {
+	
+	ppt = _ppt;
 	this->X = X;
 	this->Y = Y;
-	this->Ux = Ux;
-	this->Uy = Uy;
-
-	ppt = _ppt;
+	
 	_Ux = new double[X*Y];
 	_Uy = new double[X*Y];
+	_Temp = new double[X*Y];
 
 	//копирование начальных данных из управл€емого кода в неуправл€емый
 	System::Runtime::InteropServices::Marshal::Copy(Ux, 0, (System::IntPtr)_Ux, X*Y);
@@ -93,27 +92,15 @@ AirMixParallel::WPsi::WPsi(PPT _ppt, double tau, double nuM, int x0, int len, do
 	case PPT::CUDA:
 		computeOnCUDA = new ComputeOnCUDA::WPsi(tau, nuM, x0, len, h, X, Y, _Ux, _Uy);
 		break;
-	}
+	}	
 }
 
-AirMixParallel::WPsi::~WPsi() {
-	delete[] _Ux;
-	delete[] _Uy;
-	switch (ppt) {
-	case PPT::OpenMP:
-		computeOnOMP->~WPsi();
-		break;
-	case PPT::CUDA:
-		computeOnCUDA->~WPsi();
-		break;
-	}
 
-}
+double AirMixParallel::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, array<double> ^Temp, double tmax) {	
 
-double AirMixParallel::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, array<double> ^Ux, array<double> ^Uy, array<double> ^Temp, double tmax) {
-	double time;
-	this->Temp = Temp;
-	_Temp = new double[X*Y];
+	//копирование начальных данных из управл€емого кода в неуправл€емый
+	System::Runtime::InteropServices::Marshal::Copy(Ux, 0, (System::IntPtr)_Ux, X*Y);
+	System::Runtime::InteropServices::Marshal::Copy(Uy, 0, (System::IntPtr)_Uy, X*Y);
 	System::Runtime::InteropServices::Marshal::Copy(Temp, 0, (System::IntPtr)_Temp, X*Y);
 
 	switch (ppt) {
@@ -124,7 +111,6 @@ double AirMixParallel::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceMode
 		time = computeOnCUDA->Calculation(static_cast<ComputeOnCUDA::WPsi::HelmholtzCalcMethod>(hcm), static_cast<ComputeOnCUDA::TurbulenceModel>(tm), _Ux, _Uy, _Temp, tmax);
 		break;
 	}
-
 	
 	//копирование результата из неуправл€емого кода в управл€емый
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Ux, Ux, 0, X*Y);
@@ -132,5 +118,22 @@ double AirMixParallel::WPsi::Calculation(HelmholtzCalcMethod hcm, TurbulenceMode
 	System::Runtime::InteropServices::Marshal::Copy((System::IntPtr)_Temp, Temp, 0, X*Y);
 
 	return time;
+}
 
+
+AirMixParallel::WPsi::~WPsi() {
+	delete[] _Ux;
+	delete[] _Uy;
+	delete[] _Temp;
+
+	switch (ppt) {
+	case PPT::OpenMP:
+		computeOnOMP->~WPsi();
+		delete computeOnOMP;
+		break;
+	case PPT::CUDA:
+		computeOnCUDA->~WPsi();
+		delete computeOnCUDA;
+		break;
+	}
 }

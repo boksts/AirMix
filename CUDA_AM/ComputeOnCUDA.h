@@ -6,38 +6,38 @@ using namespace std;
 
 class ComputeOnCUDA {
 public:
+	
 	enum TurbulenceModel {
-		Secundova = 1,
-		KE = 2
+		Secundova = 1,//модель Секундова
+		KE = 2//К-Е модель
 	};
 
 	class PU {
 	public:
-
 		enum PressureCalcMethod {
-			Poisson,//
-			WeakŃompressibility //
+			Poisson,//уравнение Пуассона
+			WeakCompressibility //метод слабой сжимаемости
 		};
 
 		enum NavierStokesCalcMethod{
-			ExplicitScheme,//
-			ImplicitScheme //
+			ExplicitScheme,//явная схема
+			ImplicitScheme //неявная схема
 		};
 
-		double Calculation(PressureCalcMethod pressureCalcMethod, NavierStokesCalcMethod navierStokesCalcMethod, double* Ux, double* Uy, double *Temp, double tmax);
-
 		PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y);
+		
+		double Calculation(PressureCalcMethod pressureCalcMethod, NavierStokesCalcMethod navierStokesCalcMethod, double* Ux, double* Uy, double *Temp, double tmax);
+	
 		~PU();
 	};
 
-	
 	class WPsi {
 	private:
 	
 	public:
 		enum HelmholtzCalcMethod {
-			ExplicitScheme,
-			ImplicitScheme
+			ExplicitScheme,//явная схема
+			ImplicitScheme //неявная схема
 		};
 		
 		WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y, double *Ux,  double *Uy);
@@ -47,7 +47,6 @@ public:
 		~WPsi();
 
 	};
-
 };
 	
 	

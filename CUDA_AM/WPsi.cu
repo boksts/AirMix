@@ -8,7 +8,6 @@
 #include <ctime>
 
 #define  epsPsi 0.001f
-
 #define _BLOCK_SIZE 32
 
 #define a 0.1f
@@ -19,14 +18,11 @@
 
 using namespace std;
 
-
 // методы для вычисления времени
 class _Time{
 	cudaEvent_t Tn, Tk;
 	float time;
 public:
-
-
 	_Time(){
 		cudaEventCreate(&Tn);
 		cudaEventCreate(&Tk);
@@ -70,14 +66,11 @@ __global__ void kernel_gelmgolca(int X, int Y, double *w, double *wn, double *ps
 		else
 			duy = (w[j*X + i] - w[(j - 1)*X + i]) / h;
 
-
 		wn[j*X + i] = w[j*X + i] + tau*(-ux[j*X + i] * dux - uy[j*X + i] * duy + nuM*
 			(w[j*X + i + 1] + w[j*X + i - 1] + w[(j + 1)*X + i] + w[(j - 1)*X + i] - 4 * w[j*X + i]) / (h*h)
 			- g*betta*Temp[j*X + i]);
-
 	}
 }
-
 
 //уравнение Пуассона (метод Якоби)
 __global__ void kernel_puasson(int X, int Y, double *psi, double *w, double *psin, int *pr, double h){
@@ -94,7 +87,6 @@ __global__ void kernel_puasson(int X, int Y, double *psi, double *w, double *psi
 	}
 }
 
-
 //вычисление скоростей
 __global__ void kernel_skorosti(int X, int Y, double *psi, double *ux, double *uy, double h){
 	int i = blockIdx.x*blockDim.x + threadIdx.x;
@@ -109,6 +101,7 @@ __global__ void kernel_skorosti(int X, int Y, double *psi, double *ux, double *u
 	}
 
 }
+
 //переприсваивание
 __global__ void _kernel_pTemp(int X, int Y, int x0, int len, double *Temp, double *Tempn){
 	int i = blockIdx.x*blockDim.x + threadIdx.x;
@@ -121,7 +114,6 @@ __global__ void _kernel_pTemp(int X, int Y, int x0, int len, double *Temp, doubl
 			Temp[(Y - 1)*X + i] = Tempn[(Y - 1)*X + i];
 
 		Temp[i] = Tempn[i];
-
 	}
 }
 
@@ -159,11 +151,8 @@ __global__ void _kernel_temp(int X, int Y, int x0, int len, double *Ux, double *
 
 		//на границе сверху
 		Tempn[i] = Temp[i] + tau*a*a / (h*h)*(Temp[i + 1, 0] + Temp[i - 1] + Temp[X + i] - 4 * Temp[i]);
-
 	}
 }
-
-
 
 double *_UxDev = NULL, *_UyDev = NULL, *_UxnDev = NULL, *_UynDev = NULL, *wDev = NULL, *wnDev = NULL, *psiDev = NULL, *psinDev = NULL, *_TempDev=NULL, *_TempnDev;
 int *prDev = NULL;
@@ -172,14 +161,12 @@ int _x0, _len;
 double _tau, _h;
 double _nuM, _ro;
 int _sizef, sizei;
-double _fulltime;
 int _gridSizeX, _gridSizeY;
 _Time* _timer;
 
-
 double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::TurbulenceModel tm, double *Ux, double *Uy, double *Temp, double tmax) {
 	double t = 0;
-	
+	double fulltime;
 	//определение числа блоков и потоков
 	dim3 threads(_BLOCK_SIZE, _BLOCK_SIZE);
 	dim3 blocks(_gridSizeX, _gridSizeY);
@@ -192,7 +179,7 @@ double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::
 	bool flag = false;
 	int *pr = NULL;
 	pr = new int[_X*_Y];
-	
+
 	do{
 
 		_kernel_temp << <blocks, threads >> >(_X, _Y, _x0, _len, _UxDev, _UyDev, _TempDev, _TempnDev, _nuM, _h, _tau);
@@ -235,10 +222,9 @@ double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::
 	cudaMemcpy(Uy, _UyDev, _sizef, cudaMemcpyDeviceToHost);
 	cudaMemcpy(Temp, _TempDev, _sizef, cudaMemcpyDeviceToHost);
 
-	 _fulltime = _timer->tk();
-	 return _fulltime / 1000.0;
-	
-	
+	fulltime = _timer->tk();
+	return fulltime / 1000.0;
+
 }
 
 void ConstructorWPsi(double tau,  double nuM, int x0, int len, double h, int X, int Y, double *Ux, double *Uy){
@@ -278,11 +264,9 @@ void ConstructorWPsi(double tau,  double nuM, int x0, int len, double h, int X, 
 	for (int i = 1; i<X; i++)
 		psi[i] = psi[i - 1];
 
-
 	for (int j = Y - 2; j >= 0; j--)
 		psi[j*X + (X - 1)] = psi[(j + 1)*X + (X - 1)] + Ux[j*X + (X - 1)] * h;
 	
-
 	//определение размера грида
 	_gridSizeX = (X / _BLOCK_SIZE) + ((X % _BLOCK_SIZE) > 0 ? 1 : 0);
 	_gridSizeY = (Y / _BLOCK_SIZE) + ((Y % _BLOCK_SIZE) > 0 ? 1 : 0);
@@ -320,5 +304,4 @@ void DestructorWPsi() {
 	cudaFree(prDev);
 	cudaFree(_TempDev);
 	cudaFree(_TempnDev);
-
 }

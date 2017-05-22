@@ -17,7 +17,7 @@ using ZedGraph;
 
 
 namespace AirMix {
-   partial class Form1 : Form {
+   partial class Main : Form {
        private double[,] Ux;
        private double[,] Uy;
        private double[,] Temp;
@@ -49,7 +49,7 @@ namespace AirMix {
        object helmholtzCalcMethod;
        object turbulenceModel;
 
-       public Form1() {
+       public Main() {
            InitializeComponent();
            pbImage.Image = Image.FromFile("Image.jpg");
        }
@@ -76,10 +76,10 @@ namespace AirMix {
                }
        }
 
+       //если произведена отмена
        private void btnCancel_Click(object sender, EventArgs e) {
            bgw.CancelAsync();
        }
-
 
        //-----------BackgroundWorker---------------------------------
        private void bgw_ProgressChanged(object sender, ProgressChangedEventArgs e) {
@@ -114,6 +114,7 @@ namespace AirMix {
            }    
            
        }
+
        //===================================================================
 
        private void cbGraphics_CheckedChanged(object sender, EventArgs e) {
@@ -137,7 +138,6 @@ namespace AirMix {
            gbModeling.Enabled = gbOutput.Enabled = !rbStressTesting.Checked;
            tbH.Text = "0.1";
            tbH.Enabled = !rbStressTesting.Checked;
-
        }
 
        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {

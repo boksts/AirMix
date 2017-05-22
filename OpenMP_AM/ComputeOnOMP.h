@@ -16,7 +16,6 @@ public:
 		time_t start, end;
 	public:
 		double time;
-
 		void tn() {
 			Tn = omp_get_wtime();
 		}
@@ -26,30 +25,30 @@ public:
 			time = Tk - Tn;
 			return time;
 		}
-
 	};
 
 	class PU {
 	private:
-
 		int X, Y;
-		double *Ux, *Uy, *Uxn, *Uyn;
+		int x0, len;
 		double tau;
 		double nuM;
-		double* divU;
-		double* P;
 		double ro;
 		double h;
-		double* Temp;
-		int x0, len;
+		double *Ux, *Uy, *Uxn, *Uyn;
+		double *divU;
+		double *P;
+		double *Temp;
+		FILE* f;
+		
+		//коэффициент в методе слабой сжимаемости
 		const double b = 100;
 		//ускорение свободного падения
 		const double g = 9.8;
 		//коэффициент объемного расширения воздуха
 		double betta = 3.665 * pow(10.0, -3.0);
-		FILE* f;
+		
 	public:
-
 		enum PressureCalcMethod {
 			Poisson,//ур-е Пуассона
 			WeakСompressibility //метод слабой сжимаемости
@@ -60,33 +59,34 @@ public:
 			ImplicitScheme //неявная схема
 		};
 
+		PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y);
+		
 		double Calculation(PressureCalcMethod pressureMethod, NavierStokesCalcMethod navierStokesMethod, double* Ux, double* Uy, double* Temp, double tmax);
 		void _Poisson();
 		void _WeakСompressibility();
 		void Speeds();
-
-		PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y);
+		
 		~PU();
-
 	};
 
 	class WPsi {
 	private:
-		FILE* f;
 		int X, Y;
-		double *Ux, *Uy, *Uxn, *Uyn;
-		double *psi, *psin, *w, *wn;
+		int x0, len;
 		double tau;
 		double nuM;
 		double h;
-		int x0, len;
-		double* Temp;
+		double *Ux, *Uy, *Uxn, *Uyn;
+		double *psi, *psin, *w, *wn;
+		double *Temp;		
+		FILE* f;
+
+		//допустимая погрешность в методе Пуассона
 		const double epsPsi = 0.001;
 		//ускорение свободного падения
 		const double g = 9.8;
 		//коэффициент объемного расширения воздуха
 		double betta = 3.665 * pow(10.0, -3.0);
-
 
 	public:
 		enum HelmholtzCalcMethod {
@@ -94,35 +94,38 @@ public:
 			ImplicitScheme
 		};
 
+		WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y, double* Ux, double* Uy);
+		
 		double Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, double* Ux, double* Uy, double* Temp, double tmax);
 		void Init();
 		void CurrentFunction();
 		void Vortex();
 		void Speeds();
-
-		WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y, double* Ux, double* Uy);
+		
 		~WPsi();
-
 	};
 
 private:
 	class Temperature {
+	private:
 		int X, Y;
-		double* Tempn;
+		int x0, len;
 		double tau;
 		double nuM;
 		double h;
-		int x0, len;
+		double *Tempn;
+			
 		//коэффициент температуропроводности
 		const double c = 1.0;
 		//коэффициент температуропроводности стен
 		const double a = 0.1;
 
 	public:
-		Temperature(double tau, double nuM, int x0, int len, double h, int X, int Y);
-			
-		double* CalcTemp(double* Ux, double* Uy, double*Temp);
+		Temperature(double tau, double nuM, int x0, int len, double h, int X, int Y);	
 
+		double *CalcTemp(double* Ux, double* Uy, double*Temp);
+
+		~Temperature();
 	};
 
 };

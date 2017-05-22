@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace AirMix {
-    partial class Form1 {
+    partial class Main {
         /// <summary>
         /// Требуется переменная конструктора.
         /// </summary>
@@ -42,7 +42,7 @@ namespace AirMix {
             System.Windows.Forms.Label label12;
             System.Windows.Forms.Label label14;
             System.Windows.Forms.Label label15;
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.btnCalculate = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.rbMissingTurb = new System.Windows.Forms.RadioButton();
@@ -953,7 +953,7 @@ namespace AirMix {
             this.lblPrc.TabIndex = 23;
             this.lblPrc.Text = "Расчет выполнен на";
             // 
-            // Form1
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -966,7 +966,7 @@ namespace AirMix {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "Main";
             this.Text = "Моделирование смешивания потоков воздуха";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox5.ResumeLayout(false);

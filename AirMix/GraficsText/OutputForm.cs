@@ -14,7 +14,6 @@ namespace AirMix.Grafics {
         public int X { get; set; }
         public int Y { get; set; }
 
-
         public OutputForm() {
             InitializeComponent();
         }
@@ -31,7 +30,7 @@ namespace AirMix.Grafics {
             tbc.TabPages.Remove(tpUy);
         }
 
-        //вывод значений скоростей на экран
+        //вывод значений на экран
         private void OutDisplay(double[,] mass, RichTextBox rtb) {
             string razd;
             for (int j = 0; j < Y; j++) {
@@ -42,8 +41,7 @@ namespace AirMix.Grafics {
                 rtb.AppendText(Environment.NewLine);
             }
         }
-
-        //запись значений скоростей в файл
+    
         private void OutSpeedsFile(RichTextBox rtb, string descr) {
             sfd.Filter = "Текстовый файл|*.txt";
             if (sfd.ShowDialog() != DialogResult.OK)
@@ -54,7 +52,7 @@ namespace AirMix.Grafics {
             sw.Close();
         }
 
-
+        //запись значений в файл
         private void btnSaveFileUy_Click(object sender, EventArgs e) {
             if (tpUx.CanFocus)
                 OutSpeedsFile(rtbUx, "Скорости Ux");

@@ -21,7 +21,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenMP_AM", "OpenMP_AM\Open
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CUDA_AM", "CUDA_AM\CUDA_AM.vcxproj", "{B4FD506C-1AC9-41B7-95C4-271161D55818}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupAM", "SetupAM\SetupAM.vdproj", "{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupAM", "SetupAM\SetupAM.vdproj", "{8662633C-0725-472D-9E21-0B164758C8EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,14 +97,14 @@ Global
 		{B4FD506C-1AC9-41B7-95C4-271161D55818}.Release|Win32.Build.0 = Release|Win32
 		{B4FD506C-1AC9-41B7-95C4-271161D55818}.Release|x64.ActiveCfg = Release|x64
 		{B4FD506C-1AC9-41B7-95C4-271161D55818}.Release|x64.Build.0 = Release|x64
-		{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}.Debug|Any CPU.ActiveCfg = Debug
-		{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}.Debug|Win32.ActiveCfg = Debug
-		{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}.Debug|x64.ActiveCfg = Debug
-		{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}.Release|Any CPU.ActiveCfg = Release
-		{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}.Release|Mixed Platforms.ActiveCfg = Release
-		{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}.Release|Win32.ActiveCfg = Release
-		{8F2ACC11-2901-4D05-9F1E-0F658B7D3DFF}.Release|x64.ActiveCfg = Release
+		{8662633C-0725-472D-9E21-0B164758C8EA}.Debug|Any CPU.ActiveCfg = Debug
+		{8662633C-0725-472D-9E21-0B164758C8EA}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{8662633C-0725-472D-9E21-0B164758C8EA}.Debug|Win32.ActiveCfg = Debug
+		{8662633C-0725-472D-9E21-0B164758C8EA}.Debug|x64.ActiveCfg = Debug
+		{8662633C-0725-472D-9E21-0B164758C8EA}.Release|Any CPU.ActiveCfg = Release
+		{8662633C-0725-472D-9E21-0B164758C8EA}.Release|Mixed Platforms.ActiveCfg = Release
+		{8662633C-0725-472D-9E21-0B164758C8EA}.Release|Win32.ActiveCfg = Release
+		{8662633C-0725-472D-9E21-0B164758C8EA}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,11 +9,13 @@ using System.Windows.Forms;
 using AirMix.Grafics;
 
 namespace AirMix {
-    partial class Form1 {
+    partial class Main {
 
+        //моделирование
         private void Modeling() {
             btnCancel.Enabled = true;
             btnCalculate.Enabled = false;
+            
             //инициализация параметров расчета
             Init();
 
@@ -26,14 +28,15 @@ namespace AirMix {
             }
 
             //запуск расчета в отдельном потоке
+            //просходит вызов метода CalculationSeq или CalculationParallel
+            //подробнее смотри в файле Main.cs метод bgw_DoWork() 
             bgw.RunWorkerAsync();
 
             //вывод скоростей графическом виде       
             if (cbGraphics.Checked) {
-                    grForm = new GraphicsForm(X, Y, rbSpeeds.Checked, rbTemp.Checked, scale: scale);
+                    grForm = new GraphicsForm(X, Y, x0,len,rbSpeeds.Checked, rbTemp.Checked, scale: scale);
                     grForm.Show();
-                    grForm.Closing += grForm_Closing;
-                      
+                    grForm.Closing += grForm_Closing;                  
             }
 
             bool error;
@@ -42,12 +45,11 @@ namespace AirMix {
             while (bgw.IsBusy) {
                 //вывод графики
                 if (cbGraphics.Checked) {
-                    error = grForm.DrawDisplay(Ux, Uy, Temp, x0, len);
+                    error = grForm.DrawDisplay(Ux, Uy, Temp);
                     if (error) {
                         bgw.CancelAsync();
-                    }
-                        
-                }
+                    }                 
+                }          
                 Application.DoEvents();
             }
 
@@ -61,9 +63,18 @@ namespace AirMix {
                     outForm.OutTemp(Temp);
             }
 
-           /* if (rbCUDA.Checked || rbOpenMP.Checked) {
-                parPU.Dispose();
-            }*/
+            //освобождение ресурсов, если были использованы параллельные вычисления
+            if (rbPU.Checked) {
+                if (rbCUDA.Checked || rbOpenMP.Checked) {
+                    parPU.Dispose();
+                }
+            }
+
+            if (rbWPsi.Checked) {
+                if (rbCUDA.Checked || rbOpenMP.Checked) {
+                    parWPsi.Dispose();
+                }
+            }           
         }
 
         //последовательные вычисления
@@ -93,8 +104,10 @@ namespace AirMix {
                     wpsi.Calculation((AirMixSequential.WPsi.HelmholtzCalcMethod)helmholtzCalcMethod,
                         (AirMixSequential.TurbulenceModel)turbulenceModel, 0.0);
 
+               //чтобы графика замедлялась
                if (cbGraphics.Checked)
                     Thread.Sleep(10);
+
             } while (t < tmax);
         }
 
@@ -108,6 +121,7 @@ namespace AirMix {
             double[] Temp1d = new double[X * Y];
 
             do {
+                //создание одномерных массивов для параллельных вычислений
                 for (int j = 0; j < Y; j++)
                     for (int i = 0; i < X; i++) {
                         Ux1d[j * X + i] = Ux[i, j];
@@ -131,7 +145,6 @@ namespace AirMix {
                         parPU.Calculation((AirMixParallel.PU.PressureCalcMethod)pressureCalcMethod,
                             (AirMixParallel.PU.NavierStokesCalcMethod)navierStokesCalcMethod,
                             (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, Temp1d, 0.0);
-
                 }
 
                 //расчет в системе "вихрь - функция тока"
@@ -139,18 +152,20 @@ namespace AirMix {
                     if (rbCUDA.Checked || rbOpenMP.Checked)
                         parWPsi.Calculation((AirMixParallel.WPsi.HelmholtzCalcMethod) helmholtzCalcMethod,
                             (AirMixParallel.TurbulenceModel)turbulenceModel, Ux1d, Uy1d, Temp1d, 0.0);
-
                 }
 
+                //чтобы графика замедлялась
                 if (cbGraphics.Checked)
                     Thread.Sleep(10);
 
+                //копирование данных из парралельных вычислений
                 for (int j = 0; j < Y; j++)
                     for (int i = 0; i < X; i++) {
                         Ux[i, j] = Ux1d[j * X + i];
                         Uy[i, j] = Uy1d[j * X + i];
                         Temp[i, j] = Temp1d[j * X + i];
                     }
+
             } while (t <= tmax);
         }
     }

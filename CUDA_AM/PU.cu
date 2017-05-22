@@ -55,7 +55,6 @@ __global__ void kernel_P(int X, int Y, int x0, int l, double *P, double *Ux, dou
 		P[j*X + i] = P[j*X + i] - tau*b*(((Ux[(j + 1)*X + i + 1] + Ux[(j - 1)*X + i + 1]) - (Ux[(j - 1)*X + i - 1] + Ux[(j + 1)*X + i - 1]) +
 			(Uy[(j + 1)*X + i - 1] + Uy[(j + 1)*X + i + 1]) - (Uy[(j - 1)*X + i - 1] + Uy[(j - 1)*X + i + 1])) / (4.0*h));
 
-
 		P[i] = P[X + i];
 		P[(Y - 1)*X + i] = P[(Y - 2)*X + i];
 	}
@@ -149,11 +148,9 @@ __global__ void kernel_pTemp(int X, int Y, int x0, int len, double *Temp, double
 			Temp[(Y - 1)*X + i] = Tempn[(Y - 1)*X + i];
 
 		Temp[i] = Tempn[i];	
-		Temp[j*X + X - 1] = Temp[j*X + X - 2];
-		
+		Temp[j*X + X - 1] = Temp[j*X + X - 2];		
 	}
 }
-
 
 double *UxDev = NULL, *UyDev = NULL, *UxnDev = NULL, *UynDev = NULL,  *PDev = NULL, *TempDev = NULL, *TempnDev = NULL;
 int X, Y;
@@ -161,12 +158,12 @@ int x0, len;
 double tau, h;
 double nuM, ro;
 int sizef;
-double fulltime;
 int gridSizeX, gridSizeY;
 Time* timer;
-
+FILE *f;
 double ComputePU(ComputeOnCUDA::PU::PressureCalcMethod pressureMethod, ComputeOnCUDA::PU::NavierStokesCalcMethod navierStokesMethod, double *Ux, double *Uy, double *Temp, double tmax) {
 	double t = 0;
+	double fulltime;
 		//определение числа блоков и потоков
 	dim3 threads(BLOCK_SIZE, BLOCK_SIZE);
 	dim3 blocks(gridSizeX, gridSizeY);
@@ -216,8 +213,7 @@ void ConstructorPU(double _tau, double _ro, double _nuM, int _x0, int _len, doub
 	len = _len;
 	h = _h;
 	X = _X;
-	Y = _Y;
-	
+	Y = _Y;	
 	//f = fopen("res.txt", "w");
 	double *P = new double[X*Y];//давление
 
@@ -280,5 +276,4 @@ void DestructorPU() {
 	cudaFree(PDev);
 	cudaFree(TempDev);
 	cudaFree(TempnDev);
-
 }

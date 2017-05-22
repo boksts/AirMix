@@ -5,9 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AirMixSequential {
-    public class WPsi {
-
-        const double epsPsi = 0.001;
+    public class WPsi {    
         private readonly double nuM;
         private readonly double tau;
         private readonly double h;
@@ -19,12 +17,12 @@ namespace AirMixSequential {
 
         private Turbulation turb;
         private Temperature temp;
+        
+        //точность решения уравнения Пуассона
+        const double epsPsi = 0.001;
 
-        //функция тока
         private double[,] psi;
-        //вихрь
         private double[,] w;
-
         private double[,] nuT;
         private double[,] Ux;
         private double[,] Uy;
@@ -52,7 +50,9 @@ namespace AirMixSequential {
         ///  <param name="len">...длиной len</param>
         /// <param name="h">шаг по сетке</param>
         /// <param name="X">число точек по оси Х</param>
-        ///  <param name="Y">число точек по оси У</param>
+        ///  <param name="Ux">скорости Ux</param>
+        ///  <param name="Uy">скорости Uy</param>
+        /// <param name="Temp">температура</param>
         public WPsi(double tau, double nuM, int x0, int len, double h, int X, int Y, double[,] Ux, double[,] Uy, double[,] Temp) {
             this.nuM = nuM;
             this.tau = tau;
@@ -73,24 +73,6 @@ namespace AirMixSequential {
             temp = new Temperature(tau, nuM, x0, len, h, X, Y, Ux, Uy, Temp, nuT);   
         }
 
-        ///<summary>Расчет поля скоростей</summary>
-        /// <param name="hcm">схема расчета уравнения Гельмгольца</param>
-        ///  <param name="tm">модель турбулентности (turbulenceModel = 0 если турбулентность не расчитывается)</param>
-        /// <param name="tmax">время расчета</param>
-        public void Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, double tmax) {
-           double t = 0;
-            do {
-                if (tm != 0) //turbulenceModel == 0 если турбулентность не расчитывается
-                    nuT = turb.Calculate(tm, Ux, Uy);
-                
-                Temp = temp.CalcTemp();
-                Vortex();
-                CurrentFunction();
-                Speeds();
-                t += tau;
-            } while (t <= tmax);
-        }
-
         //начальные значения и граничные условия
         private void Init() {
             for (int i = 0; i < X; i++)
@@ -104,26 +86,43 @@ namespace AirMixSequential {
                 if (i > x0 + len)
                     psi[i, Y - 1] = 0.0;
                 if ((i >= x0) && (i <= x0 + len))
-                    psi[i, Y - 1] = psi[i + 1, Y - 1] + Uy[i, Y - 1] * h;
+                    psi[i, Y - 1] = psi[i + 1, Y - 1] + Uy[i, Y - 1]*h;
                 if (i < x0)
                     psi[i, Y - 1] = psi[i + 1, Y - 1];
             }
 
             for (int j = Y - 2; j >= 0; j--)
-                psi[0, j] = psi[0, j + 1] + Ux[0, j] * h;
+                psi[0, j] = psi[0, j + 1] + Ux[0, j]*h;
 
             for (int i = 1; i < X; i++)
                 psi[i, 0] = psi[i - 1, 0];
 
             for (int j = Y - 2; j >= 0; j--)
-                psi[X - 1, j] = psi[X - 1, j + 1] + Ux[X - 1, j] * h;
+                psi[X - 1, j] = psi[X - 1, j + 1] + Ux[X - 1, j]*h;
+        }
+
+        ///<summary>Расчет поля скоростей</summary>
+        /// <param name="hcm">схема расчета уравнения Гельмгольца</param>
+        ///  <param name="tm">модель турбулентности (turbulenceModel = 0 если турбулентность не расчитывается)</param>
+        /// <param name="tmax">время расчета</param>
+        public void Calculation(HelmholtzCalcMethod hcm, TurbulenceModel tm, double tmax) {
+            double t = 0;
+            do {
+                if (tm != 0) //turbulenceModel == 0 если турбулентность не расчитывается
+                    nuT = turb.Calculate(tm, Ux, Uy);
+
+                Temp = temp.CalcTemp();
+                Vortex();
+                CurrentFunction();
+                Speeds();
+                t += tau;
+            } while (t <= tmax);
         }
 
         //расчет поля функции тока
         private void CurrentFunction() {
             bool flag;
             double[,] psin = new double[X, Y];
-
             do {
                 flag = false;
                 for (int j = 1; j < Y - 1; j++)
@@ -171,6 +170,7 @@ namespace AirMixSequential {
                     w[i, j] = wn[i, j];
         }
 
+        //расчет скоростей
         private void Speeds() {
             for (int j = 1; j < Y - 1; j++)
                 for (int i = 1; i < X - 1; i++) {

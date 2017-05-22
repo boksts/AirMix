@@ -16,8 +16,8 @@ namespace AirMix.GraficsText {
             InitializeComponent();
             pane = new GraphPane();
         }
-
-       
+  
+        //сохранение полученного графика в файл
         private void btnSaveFile_Click(object sender, EventArgs e) {
             zgcChart.SaveAsBitmap();
         }
@@ -29,16 +29,15 @@ namespace AirMix.GraficsText {
             zgcChart.Invalidate();
            // pane.CurveList.Clear();
 
-            // Заполняем список точек
+            //список точек
             for (int x = 0; x < N; x++) {
-                // добавим в список точку
                 list.Add(x, data[x]);
             }
-            // Установим масштаб по умолчанию для оси X
+            //масштаб по умолчанию для оси X
             pane.XAxis.Scale.MinAuto = true;
             pane.XAxis.Scale.MaxAuto = true;
 
-            // Установим масштаб по умолчанию для оси Y
+            //масштаб по умолчанию для оси Y
             pane.YAxis.Scale.MinAuto = true;
             pane.YAxis.Scale.MaxAuto = true;
 
@@ -53,35 +52,28 @@ namespace AirMix.GraficsText {
 
             pane.Title.Text = "Зависимость времени выполнения от размера расчетной области";
 
-            // Включаем отображение сетки напротив крупных рисок по оси Y
+            //отображение сетки напротив крупных рисок по оси Y
             pane.YAxis.MajorGrid.IsVisible = true;
 
-            // Длина штрихов равна 10 пикселям, ..
+            //длина штрихов равна 10 пикселям
             pane.YAxis.MajorGrid.DashOn = 10;
-            // затем 5 пикселей - пропуск
+            //5 пикселей пропуск
             pane.YAxis.MajorGrid.DashOff = 5;
 
-            // Установим размеры шрифтов для подписей по осям
+            //размеры шрифтов для подписей по осям
             pane.XAxis.Title.FontSpec.Size = 10;
             pane.YAxis.Title.FontSpec.Size = 10;
 
-            // Установим размеры шрифтов для меток вдоль осей
+            //размеры шрифтов для меток вдоль осей
             pane.XAxis.Scale.FontSpec.Size = 12;
             pane.YAxis.Scale.FontSpec.Size = 12;
-
-            // Создадим кривую с названием "Sinc", 
-            // которая будет рисоваться голубым цветом (Color.Blue),
 
             LineItem myCurve = pane.AddCurve(str, list, color, SymbolType.None);
             myCurve.Line.Width = 2f;
             myCurve.Line.IsAntiAlias = true;//сглаживание
 
-            // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
-            // В противном случае на рисунке будет показана только часть графика, 
-            // которая умещается в интервалы по осям, установленные по умолчанию
             zgcChart.AxisChange();
 
-            // Обновляем график
             zgcChart.Invalidate();
         }
     }

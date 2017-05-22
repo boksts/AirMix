@@ -2,8 +2,9 @@
 
 #include "ComputeOnOMP.h"
 
-double* ComputeOnOMP::Temperature::CalcTemp(double* Ux, double* Uy, double*Temp) {
-
+double* ComputeOnOMP::Temperature::CalcTemp(double *Ux, double *Uy, double *Temp) {
+	
+	//температура внутри рассчетной области
 	#pragma omp for  schedule(static)
 	for (int i = 1; i < X - 1; i++)
 		for (int j = 1; j < Y - 1; j++)
@@ -13,7 +14,6 @@ double* ComputeOnOMP::Temperature::CalcTemp(double* Ux, double* Uy, double*Temp)
 			- (Uy[j*X + i] - abs(Uy[j*X + i])) / 2.0 * (Temp[(j+1)*X + i] - Temp[j*X + i]) / h
 			+ c*(nuM)* (Ux[j*X + i + 1] + Ux[j*X + i - 1] + Uy[(j + 1)*X + i] + Uy[(j-1)*X + i] - 2 * Ux[j*X + i] - 2 * Uy[j*X + i]) /
 			(h * h));
-
 
 	//температура в стенках
 	for (int i = 1; i < X - 1; i++) {
@@ -28,11 +28,11 @@ double* ComputeOnOMP::Temperature::CalcTemp(double* Ux, double* Uy, double*Temp)
 
 	}
 
+	//замена старых значений новыми
 	#pragma omp for  schedule(static)
 	for (int i = 1; i < X - 1; i++)
 		for (int j = 1; j < Y - 1; j++)
 			Temp[j*X + i] = Tempn[j*X + i];
-
 
 	for (int i = 1; i < X - 1; i++) {
 		if ((i < x0) || (i >= x0 + len))
@@ -41,12 +41,12 @@ double* ComputeOnOMP::Temperature::CalcTemp(double* Ux, double* Uy, double*Temp)
 		Temp[i] = Tempn[i];
 	}
 
+	//на границе справа
 	for (int j = 1; j < Y - 1; j++) {
 		Temp[j*X + X - 1] = Temp[j*X + X - 2];
 	}
 
 	return Temp;
-
 }
 
 
@@ -60,4 +60,8 @@ ComputeOnOMP::Temperature::Temperature(double tau, double nuM, int x0, int len, 
 	this->len = len;
 
 	Tempn = new double[X*Y];
+}
+
+ComputeOnOMP::Temperature::~Temperature() {
+	delete[] Tempn;
 }

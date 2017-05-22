@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace AirMixSequential {      
     
     public class PU  {
+
         private readonly double tau;
         private readonly double nuM;
         private readonly double ro;
@@ -20,7 +21,7 @@ namespace AirMixSequential {
         private readonly int len;
 
         private double[,] P;
-        private double[,] divU;     
+        private double[,] divU;
         private double[,] Uxn;
         private double[,] Uyn;
         private double[,] nuT;
@@ -33,6 +34,8 @@ namespace AirMixSequential {
 
         //ускорение свободного падения
         const double g = 9.8;
+        //коэффициент для метода слабой сжимаемости
+        const double b = 100.0;
         //коэффициент объемного расширения воздуха
         private readonly double betta = 0.003665;
 
@@ -42,30 +45,37 @@ namespace AirMixSequential {
         public enum PressureCalcMethod {
             ///<summary>ур-е Пуассона</summary>
             Poisson,
+
             ///<summary>метод слабой сжимаемости</summary>
-            WeakСompressibility 
+            WeakСompressibility
         }
 
         /// <summary>
         /// Схема расчета уравнения Навье-Стокса
         /// </summary>
-        public enum NavierStokesCalcMethod{
+        public enum NavierStokesCalcMethod {
             ///<summary>явная схема</summary>
             ExplicitScheme,
+
             ///<summary>неявная схема</summary>
-            ImplicitScheme 
+            ImplicitScheme
         }
 
         ///<summary>Установка параметров расчета</summary>
         /// <param name="tau">шаг по времени</param>
         /// <param name="ro">плотность</param>
-        ///  <param name="nuM">молекулярная вязкость</param>
-        ///  <param name="x0">расположение отвестия снизу от точки х0...</param>
-        ///  <param name="len">...длиной len</param>
+        /// <param name="nuM">молекулярная вязкость</param>
+        /// <param name="x0">расположение отвестия снизу от точки х0...</param>
+        /// <param name="len">...длиной len</param>
         /// <param name="h">шаг по сетке</param>
         /// <param name="X">число точек по оси Х</param>
-        ///  <param name="Y">число точек по оси У</param>
-        public PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y ,double[,] Ux, double[,] Uy, double [,] Temp) {
+        /// <param name="Y">число точек по оси У</param>
+        /// <param name="Ux">скорости Ux</param>
+        /// <param name="Uy">скорости Uy</param>
+        /// <param name="Temp">температура</param>
+        public PU(double tau, double ro, double nuM, int x0, int len, double h, int X, int Y, double[,] Ux, double[,] Uy,
+            double[,] Temp) {
+
             this.tau = tau;
             this.nuM = nuM;
             this.ro = ro;
@@ -76,7 +86,7 @@ namespace AirMixSequential {
             this.len = len;
             this.Ux = Ux;
             this.Uy = Uy;
-   
+
             P = new double[X, Y];
             divU = new double[X, Y];
             Uxn = new double[X, Y];
@@ -89,21 +99,16 @@ namespace AirMixSequential {
                     P[i, j] = 0.0;
                 }
 
-            turb = new Turbulation(X,Y,h,tau,nuM);
-            temp = new Temperature(tau,nuM,x0,len,h,X,Y,Ux,Uy,Temp,nuT);    
+            turb = new Turbulation(X, Y, h, tau, nuM);
+            temp = new Temperature(tau, nuM, x0, len, h, X, Y, Ux, Uy, Temp, nuT);
         }
-
 
         ///<summary>Расчет поля скоростей</summary>
         /// <param name="pcm">метод расчета поля давления</param>
         /// <param name="nscm">схема расчета уравнения Навье-Стокса</param>
-        ///  <param name="tm">модель турбулентности (turbulenceModel = 0 если турбулентность не расчитывается)</param>
-        ///  <param name="Ux">скорости Ux</param>
-        ///  <param name="Uy">скорости Uy</param>
+        /// <param name="tm">модель турбулентности (turbulenceModel = 0 если турбулентность не расчитывается)</param>
         /// <param name="tmax">время расчета</param>
-        public void Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm,
-            TurbulenceModel tm, double tmax) {        
-
+        public void Calculation(PressureCalcMethod pcm, NavierStokesCalcMethod nscm, TurbulenceModel tm, double tmax) {
             double t = 0;
             do {
                 if (tm != 0) //turbulenceModel = 0 если турбулентность не расчитывается
@@ -142,7 +147,6 @@ namespace AirMixSequential {
                                                 (h*h)
                                                 - g*betta*Temp[i, j]);
 
-
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
                     Uyn[i, j] = Uy[i, j] + tau*(-(Ux[i, j] + Math.Abs(Ux[i, j]))/2.0*(Uy[i, j] - Uy[i - 1, j])/h
@@ -153,10 +157,10 @@ namespace AirMixSequential {
                                                 (P[i - 1, j + 1] + P[i + 1, j + 1] - P[i - 1, j - 1] - P[i + 1, j - 1])/
                                                 (4*h*ro)
                                                 +
-                                                (nuM + nuT[i, j]) *
+                                                (nuM + nuT[i, j])*
                                                 (Uy[i + 1, j] + Uy[i - 1, j] + Uy[i, j + 1] + Uy[i, j - 1] - 4*Uy[i, j])/
                                                 (h*h)
-                                                 - g * betta * Temp[i, j]);
+                                                - g*betta*Temp[i, j]);
 
 
             for (int i = 1; i < X - 1; i++)
@@ -170,9 +174,9 @@ namespace AirMixSequential {
 
         //расчет поля давления с помощью уравнения Пуассона
         private void Poisson() {
-            const double tauP = 0.0001;//шаг уравнения Пуассона ???
-            const double eps = 0.1;//допустимая погрешность ???
-            const double tetta = 1.85;//для метода верхней релаксации
+            const double tauP = 0.0001; //шаг уравнения Пуассона ???
+            const double eps = 0.1; //допустимая погрешность ???
+            const double tetta = 1.85; //для метода верхней релаксации
             double[,] A = new double[X, Y];
 
             double tmp;
@@ -183,22 +187,24 @@ namespace AirMixSequential {
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
                     divU[i, j] = ((Ux[i + 1, j + 1] + Ux[i + 1, j - 1]) -
-                        (Ux[i - 1, j - 1] + Ux[i - 1, j + 1]) +
-                        (Uy[i - 1, j + 1] + Uy[i + 1, j + 1]) -
-                        (Uy[i - 1, j - 1] + Uy[i + 1, j - 1])) / (4.0 * h);
+                                  (Ux[i - 1, j - 1] + Ux[i - 1, j + 1]) +
+                                  (Uy[i - 1, j + 1] + Uy[i + 1, j + 1]) -
+                                  (Uy[i - 1, j - 1] + Uy[i + 1, j - 1]))/(4.0*h);
 
             //вычисление правой части в уравнении Пуассона
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
-                    A[i, j] = -ro * (
-                        Math.Pow((Ux[i + 1, j] - Ux[i - 1, j]) / (2.0 * h), 2.0)
-                        + Math.Pow((Uy[i, j + 1] - Ux[i, j - 1]) / (2.0 * h), 2.0)
-                        + (Ux[i + 1, j] - Ux[i - 1, j]) * (Uy[i, j + 1] - Ux[i, j - 1]) / (2.0 * h * h) - divU[i, j] / tauP
-                        + (Ux[i, j] + Math.Abs(Ux[i, j])) / 2.0 * (divU[i, j] - divU[i - 1, j]) / h
-                        + (Ux[i, j] - Math.Abs(Ux[i, j])) / 2.0 * (divU[i + 1, j] - divU[i, j]) / h
-                        + (Uy[i, j] + Math.Abs(Uy[i, j])) / 2.0 * (divU[i, j] - divU[i, j - 1]) / h
-                        + (Uy[i, j] - Math.Abs(Uy[i, j])) / 2.0 * (divU[i, j + 1] - divU[i, j]) / h
-                        - (nuM + nuT[i, j]) * (divU[i + 1, j] + divU[i - 1, j] + divU[i, j + 1] + divU[i, j - 1] - 4.0 * divU[i, j]) / (h * h));
+                    A[i, j] = -ro*(
+                        Math.Pow((Ux[i + 1, j] - Ux[i - 1, j])/(2.0*h), 2.0)
+                        + Math.Pow((Uy[i, j + 1] - Ux[i, j - 1])/(2.0*h), 2.0)
+                        + (Ux[i + 1, j] - Ux[i - 1, j])*(Uy[i, j + 1] - Ux[i, j - 1])/(2.0*h*h) - divU[i, j]/tauP
+                        + (Ux[i, j] + Math.Abs(Ux[i, j]))/2.0*(divU[i, j] - divU[i - 1, j])/h
+                        + (Ux[i, j] - Math.Abs(Ux[i, j]))/2.0*(divU[i + 1, j] - divU[i, j])/h
+                        + (Uy[i, j] + Math.Abs(Uy[i, j]))/2.0*(divU[i, j] - divU[i, j - 1])/h
+                        + (Uy[i, j] - Math.Abs(Uy[i, j]))/2.0*(divU[i, j + 1] - divU[i, j])/h
+                        -
+                        (nuM + nuT[i, j])*
+                        (divU[i + 1, j] + divU[i - 1, j] + divU[i, j + 1] + divU[i, j - 1] - 4.0*divU[i, j])/(h*h));
 
             do {
                 flag = false;
@@ -231,20 +237,18 @@ namespace AirMixSequential {
                         P[i, Y - 1] = P[i, Y - 2];
                 }
             } while (step != 200); //(flag); 
-
         }
-
 
         //расчет поля давления методом слабой сжимаемости
         private void WeakСompressibility() {
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
                     divU[i, j] = ((Ux[i + 1, j + 1] + Ux[i + 1, j - 1]) - (Ux[i - 1, j - 1] + Ux[i - 1, j + 1]) +
-                                  (Uy[i - 1, j + 1] + Uy[i + 1, j + 1]) - (Uy[i - 1, j - 1] + Uy[i + 1, j - 1])) / (4.0 * h);
+                                  (Uy[i - 1, j + 1] + Uy[i + 1, j + 1]) - (Uy[i - 1, j - 1] + Uy[i + 1, j - 1]))/(4.0*h);
 
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
-                    P[i, j] = P[i, j] - tau * 100.0 * divU[i, j];
+                    P[i, j] = P[i, j] - tau*b*divU[i, j];
 
             //давление на горизонтальных границах
             for (int i = 0; i < X; i++) {
@@ -253,13 +257,13 @@ namespace AirMixSequential {
             }
 
             for (int j = 0; j < Y; j++) {
-                P[0, j] = 2 * P[1, j] - P[2, j]; //1 поток
-                P[X - 1, j] = 2 * P[X - 2, j] - P[X - 3, j]; // выход
+                P[0, j] = 2*P[1, j] - P[2, j]; //1 поток
+                P[X - 1, j] = 2*P[X - 2, j] - P[X - 3, j]; // выход
             }
 
             for (int i = 0; i < X; i++) {
                 if ((i >= x0) && (i <= x0 + len))
-                    P[i, Y - 1] = 2 * P[i, Y - 2] - P[i, Y - 3]; //2 поток
+                    P[i, Y - 1] = 2*P[i, Y - 2] - P[i, Y - 3]; //2 поток
             }
         }
 
@@ -296,7 +300,6 @@ namespace AirMixSequential {
                     Uy2[i, j] = Uy1[i, j] + tau*(-(Uy1[i, j] + Math.Abs(Ux1[i, j]))/2.0*(Uy2[i, j] - Uy2[i, j - 1])/h
                                                  - (Uy1[i, j] - Math.Abs(Uy1[i, j]))/2.0*(Uy2[i, j + 1] - Uy2[i, j])/h
                                                  + (nuM + nuT[i, j])*(Uy2[i, j + 1] - 2*Uy2[i, j] + Uy2[i, j - 1])/(h*h));
-
 
             //метод расщепления 3 этап
             for (int i = 1; i < X - 1; i++)
