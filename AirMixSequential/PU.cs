@@ -174,8 +174,8 @@ namespace AirMixSequential {
 
         //расчет поля давления с помощью уравнения Пуассона
         private void Poisson() {
-            const double tauP = 0.0001; //шаг уравнения Пуассона ???
-            const double eps = 0.1; //допустимая погрешность ???
+            const double tauP = 0.001; //шаг уравнения Пуассона ???
+            const double eps = 0.01; //допустимая погрешность ???
             const double tetta = 1.85; //для метода верхней релаксации
             double[,] A = new double[X, Y];
 
@@ -195,9 +195,8 @@ namespace AirMixSequential {
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
                     A[i, j] = -ro*(
-                        Math.Pow((Ux[i + 1, j] - Ux[i - 1, j])/(2.0*h), 2.0)
-                        + Math.Pow((Uy[i, j + 1] - Ux[i, j - 1])/(2.0*h), 2.0)
-                        + (Ux[i + 1, j] - Ux[i - 1, j])*(Uy[i, j + 1] - Ux[i, j - 1])/(2.0*h*h) - divU[i, j]/tauP
+                        Math.Pow((Ux[i + 1, j] - Ux[i - 1, j])/(2.0*h), 2.0) + Math.Pow((Uy[i, j + 1] - Uy[i, j - 1])/(2.0*h), 2.0)
+                        + (Ux[i, j+1] - Ux[i, j-1])*(Uy[i+1, j] - Uy[i-1, j])/(2.0*h*h) - divU[i, j]/tauP
                         + (Ux[i, j] + Math.Abs(Ux[i, j]))/2.0*(divU[i, j] - divU[i - 1, j])/h
                         + (Ux[i, j] - Math.Abs(Ux[i, j]))/2.0*(divU[i + 1, j] - divU[i, j])/h
                         + (Uy[i, j] + Math.Abs(Uy[i, j]))/2.0*(divU[i, j] - divU[i, j - 1])/h
@@ -236,7 +235,7 @@ namespace AirMixSequential {
                     else
                         P[i, Y - 1] = P[i, Y - 2];
                 }
-            } while (step != 200); //(flag); 
+            } while (flag); //(flag); 
         }
 
         //расчет поля давления методом слабой сжимаемости

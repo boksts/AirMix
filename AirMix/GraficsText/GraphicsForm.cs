@@ -143,7 +143,7 @@ namespace AirMix {
                             yo = yb - y1*h;
                             xn = y1;
                             yn = -x1;
-                            pen.Width = 2.0f;
+                            pen.Width = 0.1f;
                             pen.Color = Color.Black;
                             g.DrawLine(pen, xa, ya, xb, yb);
                             pen.Color = Color.Blue;

@@ -139,7 +139,7 @@ namespace AirMix {
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(36, 108);
+            label5.Location = new System.Drawing.Point(36, 116);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(95, 17);
             label5.TabIndex = 9;
@@ -148,7 +148,7 @@ namespace AirMix {
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(10, 33);
+            label6.Location = new System.Drawing.Point(10, 38);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(126, 17);
             label6.TabIndex = 11;
@@ -157,7 +157,7 @@ namespace AirMix {
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(23, 71);
+            label7.Location = new System.Drawing.Point(23, 77);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(108, 17);
             label7.TabIndex = 13;
@@ -306,7 +306,6 @@ namespace AirMix {
             // rbKE
             // 
             this.rbKE.AutoSize = true;
-            this.rbKE.Enabled = false;
             this.rbKE.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbKE.Location = new System.Drawing.Point(113, 48);
             this.rbKE.Name = "rbKE";
@@ -467,7 +466,7 @@ namespace AirMix {
             // 
             // tbTimeMax
             // 
-            this.tbTimeMax.Location = new System.Drawing.Point(142, 70);
+            this.tbTimeMax.Location = new System.Drawing.Point(142, 76);
             this.tbTimeMax.Name = "tbTimeMax";
             this.tbTimeMax.Size = new System.Drawing.Size(43, 22);
             this.tbTimeMax.TabIndex = 12;
@@ -475,7 +474,7 @@ namespace AirMix {
             // 
             // tbTau
             // 
-            this.tbTau.Location = new System.Drawing.Point(142, 33);
+            this.tbTau.Location = new System.Drawing.Point(142, 38);
             this.tbTau.Name = "tbTau";
             this.tbTau.Size = new System.Drawing.Size(43, 22);
             this.tbTau.TabIndex = 10;
@@ -483,7 +482,7 @@ namespace AirMix {
             // 
             // tbH
             // 
-            this.tbH.Location = new System.Drawing.Point(142, 108);
+            this.tbH.Location = new System.Drawing.Point(142, 116);
             this.tbH.Name = "tbH";
             this.tbH.Size = new System.Drawing.Size(43, 22);
             this.tbH.TabIndex = 8;

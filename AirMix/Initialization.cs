@@ -47,7 +47,7 @@ namespace AirMix {
                  //скорость на входе (1 поток)
                  Ux[0, j] = 4.0*UxMax*j*(Y - 1 - j)/((Y - 1)*(Y - 1));
                  //скорость на выходе
-                 Ux[X - 1, j] = 4.0*(UxMax*(Y - 1) + UyMax*len)*j*(Y - 1 - j)/(Math.Pow((Y - 1), 3.0));
+                 Ux[X - 1, j] = 4.0*(UxMax*(Y - 1) + Math.Abs(UyMax*len))*j*(Y - 1 - j)/(Math.Pow((Y - 1), 3.0));
              }
 
              for (int i = 0; i < X; i++) {
