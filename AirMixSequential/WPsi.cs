@@ -20,6 +20,9 @@ namespace AirMixSequential {
         
         //точность решения уравнения Пуассона
         const double epsPsi = 0.001;
+        //для метода верхней релаксации
+        const double tetta = 1.85; 
+
 
         private double[,] psi;
         private double[,] w;
@@ -86,7 +89,7 @@ namespace AirMixSequential {
                 if (i > x0 + len)
                     psi[i, Y - 1] = 0.0;
                 if ((i >= x0) && (i <= x0 + len))
-                    psi[i, Y - 1] = psi[i + 1, Y - 1] + Uy[i, Y - 1]*h;
+                    psi[i, Y - 1] = psi[i + 1, Y - 1] + Math.Abs(Uy[i, Y - 1])*h;
                 if (i < x0)
                     psi[i, Y - 1] = psi[i + 1, Y - 1];
             }
@@ -122,20 +125,18 @@ namespace AirMixSequential {
         //расчет поля функции тока
         private void CurrentFunction() {
             bool flag;
-            double[,] psin = new double[X, Y];
+            double psin;
             do {
                 flag = false;
-                for (int j = 1; j < Y - 1; j++)
-                    for (int i = 1; i < X - 1; i++) {
-                        psin[i, j] = 0.25*(psi[i + 1, j] + psi[i - 1, j]+ psi[i, j + 1] + psi[i, j - 1] + h*h*w[i, j]);
-
-                        if (Math.Abs(psin[i, j] - psi[i, j]) >= epsPsi)
+                //метод верхней релаксации 
+                for (int i = 1; i < X - 1; i++)
+                    for (int j = 1; j < Y - 1; j++) {                    
+                        psin = (1.0 - tetta) * psi[i, j] +
+                                  (tetta / 4.0) * (psi[i + 1, j] + psi[i - 1, j] + psi[i, j + 1] + psi[i, j - 1] + h * h * w[i, j]);
+                        if (Math.Abs(psin - psi[i, j]) >= epsPsi)
                             flag = true;
+                        psi[i, j] = psin;
                     }
-
-                for (int j = 1; j < Y - 1; j++)
-                    for (int i = 1; i < X - 1; i++)
-                        psi[i, j] = psin[i, j];
             } while (flag);
         }
 
@@ -175,7 +176,7 @@ namespace AirMixSequential {
             for (int j = 1; j < Y - 1; j++)
                 for (int i = 1; i < X - 1; i++) {
                     Ux[i, j] = -(psi[i + 1, j + 1] + psi[i - 1, j + 1] - psi[i + 1, j - 1] - psi[i - 1, j - 1])/(4.0*h);
-                    Uy[i, j] = -(psi[i + 1, j + 1] - psi[i - 1, j + 1] + psi[i + 1, j - 1] - psi[i - 1, j - 1])/(4.0*h);
+                    Uy[i, j] =  (psi[i + 1, j + 1] - psi[i - 1, j + 1] + psi[i + 1, j - 1] - psi[i - 1, j - 1])/(4.0*h);
                 }
         }   
 

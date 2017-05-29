@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -35,25 +36,28 @@ namespace AirMix {
             InitializeComponent();
             pb.SizeMode = PictureBoxSizeMode.AutoSize;
             ClientSize = new Size(X*scale + 60, Y*scale + 60);
-            MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height - 100);
-            bmp = new Bitmap(X*scale + 30, Y*scale);
+            MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height - 100);          
             pen = new Pen(Color.Black);
-            g = Graphics.FromImage(bmp);
+            
             if (speeds) {
-                pbImage.Visible = false;
+                bmp = new Bitmap(X * scale+200, Y * scale);
+                pbImage.Visible = false;           
             }
 
             if (temp) {
+                bmp = new Bitmap(X*scale, Y*scale);
                 ClientSize = new Size(X*scale + 180, Y*scale + 60);
                 pbImage.Visible = true;
                 pbImage.Image = Image.FromFile("Temp.jpg");
                 //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             }
+            
+            g = Graphics.FromImage(bmp);
             pb.Image = bmp; 
         }
 
         public bool DrawDisplay(double[,] Ux, double[,] Uy, double[,] Temp) {
-            g.Clear(Color.White);
+            g.Clear(Color.White); 
             DoubleBuffered = true;
             pen.Color = Color.Black;
             pen.Width = 4.0f;

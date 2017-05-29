@@ -28,8 +28,8 @@ namespace AirMixSequential {
         private const double cMu = 0.09;
         private const double c1 = 1.44;
         private const double c2 = 1.92;
-        private const double cK = 0.2;
-        private const double cE = 0.2;
+        private const double cK = 1.0;
+        private const double cE = 1.0;
         private const double sK = 1.0;
         private const double sE = 1.3;
         private double[,] K;
@@ -54,7 +54,6 @@ namespace AirMixSequential {
         private double funcTurb(double z) {
             return 0.2*(z*z + 1.47*z + 0.2)/(z*z - 1.47*z + 1.0);
         }
-
         public Turbulation(int X, int Y, double h, double tau, double nuM) {
             this.h = h;
             this.tau = tau;
@@ -83,13 +82,7 @@ namespace AirMixSequential {
             }
         }
 
-        private void Secundova(double[,] Ux, double[,] Uy) {
-
-            //граниичное условие на выходе
-            for (int j = 0; j < Y; j++) {
-                nuT[X - 1, j] = nuT[X - 2, j];
-            }
-
+        private void Secundova(double[,] Ux, double[,] Uy) {      
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
                     D[i,j] = Math.Sqrt(2.0*Math.Pow((Ux[i + 1, j] - Ux[i - 1, j])/(2.0*h), 2.0)
@@ -98,22 +91,21 @@ namespace AirMixSequential {
 
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
-                    nuTn[i, j] = nuT[i, j] + tau*(
-                        -Ux[i, j]*(nuT[i + 1, j] - nuT[i - 1, j])/(2.0*h) -
-                        Uy[i, j]*(nuT[i, j + 1] - nuT[i, j - 1])/(2.0*h)
-                        +
-                        Hi*
-                        (Math.Pow((nuT[i + 1, j] - nuT[i - 1, j])/(2.0*h), 2.0) +
-                         Math.Pow((nuT[i, j + 1] - nuT[i, j - 1])/(2.0*h), 2.0))
-                        +
-                        (nuM + Betta*nuT[i, j])*
-                        (nuT[i + 1, j] + nuT[i - 1, j] + nuT[i, j + 1] + nuT[i, j - 1] - 4.0*nuT[i, j])/(h*h)
-                        + nuT[i, j]*funcTurb(nuT[i, j]/(8.0*nuM))*D[i,j] -
-                        Gamma*Math.Pow(Lmin, -2.0)*(nuM + Betta*nuT[i, j])*nuT[i, j]);
-
+                    nuTn[i, j] = nuT[i, j] + tau * (-(Ux[i, j] + Math.Abs(Ux[i, j])) / 2.0 * (nuT[i, j] - nuT[i - 1, j]) / h
+                                              - (Ux[i, j] - Math.Abs(Ux[i, j])) / 2.0 * (nuT[i + 1, j] - nuT[i, j]) / h
+                                              - (Uy[i, j] + Math.Abs(Uy[i, j])) / 2.0 * (nuT[i, j] - nuT[i, j - 1]) / h
+                                              - (Uy[i, j] - Math.Abs(Uy[i, j])) / 2.0 * (nuT[i, j + 1] - nuT[i, j]) / h
+                                              +
+                                              (Hi+nuM + nuT[i, j] * Hi) *
+                                              (nuT[i + 1, j] + nuT[i - 1, j] + nuT[i, j + 1] + nuT[i, j - 1] - 4.0 * nuT[i, j]) /
+                                              (h * h)  + nuT[i, j]*funcTurb(nuT[i, j]/(8.0*nuM))*D[i,j] -
+                                                Gamma*Math.Pow(Lmin, -2.0)*(nuM + Betta*nuT[i, j])*nuT[i, j]);            
+                      
             for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
                     nuT[i, j] = nuTn[i, j];
+
+         
         }
 
         private void KE(double[,] Ux, double[,] Uy) {
@@ -148,7 +140,9 @@ namespace AirMixSequential {
                                               - (Uy[i, j] + Math.Abs(Uy[i, j]))/2.0*(K[i, j] - K[i, j - 1])/h
                                               - (Uy[i, j] - Math.Abs(Uy[i, j]))/2.0*(K[i, j + 1] - K[i, j])/h
                                               +
-                                              (nuM + nuT[i, j])/sK*
+                                              (1 / sK) *
+                                              (K[i,j]*(nuT[i + 1, j] + nuT[i, j+1])+nuT[i,j]*(K[i + 1, j] + K[i, j+1])-4*nuT[i,j]*K[i,j])/ (h * h) 
+                                              +(nuM + nuT[i, j])/sK*
                                               (K[i + 1, j] + K[i - 1, j] + K[i, j + 1] + K[i, j - 1] - 4.0*K[i, j])/
                                               (h*h) +Sk[i,j]);
 
@@ -158,8 +152,10 @@ namespace AirMixSequential {
                                               - (Ux[i, j] - Math.Abs(Ux[i, j])) / 2.0 * (E[i + 1, j] - E[i, j]) / h
                                               - (Uy[i, j] + Math.Abs(Uy[i, j])) / 2.0 * (E[i, j] - E[i, j - 1]) / h
                                               - (Uy[i, j] - Math.Abs(Uy[i, j])) / 2.0 * (E[i, j + 1] - E[i, j]) / h
-                                              +
-                                              (nuM + nuT[i, j])/sE*
+                                               +
+                                              (1 / sE) *
+                                              (E[i, j] * (nuT[i + 1, j] + nuT[i, j + 1]) + nuT[i, j] * (E[i + 1, j] + E[i, j + 1]) - 4 * nuT[i, j] * E[i, j]) / (h * h)
+                                              + (nuM + nuT[i, j]) / sE *
                                               (E[i + 1, j] + E[i - 1, j] + E[i, j + 1] + E[i, j - 1] - 4.0 * E[i, j]) /
                                               (h * h) + Se[i, j]);
 
@@ -171,10 +167,9 @@ namespace AirMixSequential {
                         
              for (int i = 1; i < X - 1; i++)
                 for (int j = 1; j < Y - 1; j++)
-                    nuT[i, j] = cMu*K[i, j]*K[i, j]/E[i, j];      
+                    nuT[i, j] = cMu*K[i, j]*K[i, j]/E[i, j];         
 
         }
-
 
         public double[,] Calculate(TurbulenceModel model, double[,] Ux, double[,] Uy) {
             switch (model) {

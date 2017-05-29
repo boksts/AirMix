@@ -87,7 +87,7 @@ namespace AirMix {
                pgb.Value = e.ProgressPercentage;
                 lblPrc.Text = "Расчет выполнен на " + pgb.Value + "%";
            }
-           if (rbStressTesting.Checked) {
+           if (rbStressTesting.Checked || rbSetSpeeds.Checked) {
                pgb.Style = ProgressBarStyle.Marquee;
                lblPrc.Text = "Расчеты выполняются ...";
            }
@@ -111,18 +111,19 @@ namespace AirMix {
            }
            if (rbStressTesting.Checked) {
                StressTestingCalculate(sender, e);
-           }    
+           }
            
        }
 
        //===================================================================
 
-       private void cbGraphics_CheckedChanged(object sender, EventArgs e) {
-           nudScale.Enabled = cbGraphics.Checked;
-       }
+
 
        private void rbTurbNO_CheckedChanged(object sender, EventArgs e) {
-           tbNuM.Enabled = !rbMissingTurb.Checked;
+           if (!rbMissingTurb.Checked)
+                tbNuM.Text = Convert.ToString(0.0000151);
+           else
+               tbNuM.Text = Convert.ToString(1.0);
        }
 
        private void rbPU_CheckedChanged(object sender, EventArgs e) {
@@ -138,11 +139,26 @@ namespace AirMix {
            gbModeling.Enabled = gbOutput.Enabled = !rbStressTesting.Checked;
            tbH.Text = "0.1";
            tbH.Enabled = !rbStressTesting.Checked;
+           rbTimeSpeeds.Checked = true;
+           rbSetSpeeds.Enabled = !rbStressTesting.Checked;
        }
 
        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
            bgw.CancelAsync();
        }
+
+       private void сbGraphicsResult_CheckedChanged(object sender, EventArgs e) {
+           nudScale.Enabled = сbGraphicsResult.Checked;
+       }
+
+       private void сbGraphicsProcess_CheckedChanged(object sender, EventArgs e) {
+           nudScale.Enabled = сbGraphicsProcess.Checked;
+       }
+
+       private void rbTimeSpeeds_CheckedChanged(object sender, EventArgs e) {
+           tbTimeMax.Enabled = rbTimeSpeeds.Checked;
+       }
+    
     
    }
 }

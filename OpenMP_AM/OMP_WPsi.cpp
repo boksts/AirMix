@@ -39,7 +39,7 @@ void ComputeOnOMP::WPsi::Init() {
 		if (i > x0 + len)
 			psi[i + (Y - 1) * X] = 0.0;
 		if ((i >= x0) && (i <= x0 + len))
-			psi[i + (Y - 1) * X] = psi[i + (Y - 1) * X + 1] + Uy[i + (Y - 1) * X] * h;
+			psi[i + (Y - 1) * X] = psi[i + (Y - 1) * X + 1] + fabs(Uy[i + (Y - 1) * X]) * h;
 		if (i < x0)
 			psi[i + (Y - 1) * X] = psi[i + (Y - 1) * X + 1];
 	}
@@ -94,21 +94,20 @@ void ComputeOnOMP::WPsi::Vortex() {
 //расчет поля функции тока
 void ComputeOnOMP::WPsi::CurrentFunction() {
 	int pr;
+	double tmp;
 	do {
 		pr = 1;
-		#pragma omp parallel for schedule(static) reduction(*:pr)
+		#pragma omp parallel for schedule(static) private(tmp) reduction(*:pr)
 		for (int j = 1; j<Y - 1; j++)
-			for (int i = 1; i<X - 1; i++){
-				psin[j*X + i] = 0.25*(psi[j*X + i + 1] + psi[j*X + i - 1] + psi[(j + 1)*X + i] + psi[(j - 1)*X + i] + h*h*w[j*X + i]);
+			for (int i = 1; i<X - 1; i++){			
+				tmp = (1.0 - tetta) * psi[j*X + i] +
+					(tetta / 4.0) *(psi[j*X + i + 1] + psi[j*X + i - 1] + psi[(j + 1)*X + i] + psi[(j - 1)*X + i] + h*h*w[j*X + i]);
 
-			if (abs(psin[j*X + i] - psi[j*X + i]) >= epsPsi)
-				pr = 0;
+				if (abs(tmp - psi[j*X + i]) >= epsPsi)
+					pr = 0;
+
+				psi[j*X + i] = tmp;
 			}
-
-		#pragma omp parallel for schedule(static) 
-		for (int j = 1; j<Y - 1; j++)
-			for (int i = 1; i<X - 1; i++)
-				psi[j*X + i] = psin[j*X + i];
 
 	} while (pr==0);
 }
@@ -118,8 +117,8 @@ void ComputeOnOMP::WPsi::Speeds() {
 	#pragma omp parallel for schedule(static)
 	for (int j = 1; j<Y - 1; j++)
 		for (int i = 1; i<X - 1; i++){
-		Ux[j*X + i] = -(psi[(j + 1)*X + i + 1] + psi[(j + 1)*X + i - 1] - psi[(j - 1)*X + i + 1] - psi[(j - 1)*X + i - 1]) / (4 * h);
-		Uy[j*X + i] = -(psi[(j + 1)*X + i + 1] - psi[(j + 1)*X + i - 1] + psi[(j - 1)*X + i + 1] - psi[(j - 1)*X + i - 1]) / (4 * h);
+			Ux[j*X + i] = -(psi[(j + 1)*X + i + 1] + psi[(j + 1)*X + i - 1] - psi[(j - 1)*X + i + 1] - psi[(j - 1)*X + i - 1]) / (4 * h);
+			Uy[j*X + i] = (psi[(j + 1)*X + i + 1] - psi[(j + 1)*X + i - 1] + psi[(j - 1)*X + i + 1] - psi[(j - 1)*X + i - 1]) / (4 * h);
 		}
 }
 

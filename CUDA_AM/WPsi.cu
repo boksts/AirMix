@@ -15,6 +15,7 @@
 #define g 9.8f
 
 #define betta  0.003665f
+#define tetta  1.85f
 
 using namespace std;
 
@@ -72,8 +73,8 @@ __global__ void kernel_gelmgolca(int X, int Y, double *w, double *wn, double *ps
 	}
 }
 
-//уравнение Пуассона (метод Якоби)
-__global__ void kernel_puasson(int X, int Y, double *psi, double *w, double *psin, int *pr, double h){
+//уравнение Пуассона (метод верхней релаксации)
+__global__ void kernel_puasson(int X, int Y, double *psi, double *w, int *pr, double h, double *psin){
 	int i = blockIdx.x*blockDim.x + threadIdx.x;
 	int j = blockIdx.y*blockDim.y + threadIdx.y;
 
@@ -85,6 +86,7 @@ __global__ void kernel_puasson(int X, int Y, double *psi, double *w, double *psi
 		if (fabs(psin[j*X + i] - psi[j*X + i]) >= epsPsi)
 			pr[j*X + i] = 1;
 	}
+
 }
 
 //вычисление скоростей
@@ -96,7 +98,7 @@ __global__ void kernel_skorosti(int X, int Y, double *psi, double *ux, double *u
 		ux[j*X + i] = -(psi[(j + 1)*X + i + 1] + psi[(j + 1)*X + i - 1]
 			- psi[(j - 1)*X + i + 1] - psi[(j - 1)*X + i - 1]) / (4 * h);
 
-		uy[j*X + i] = -(psi[(j + 1)*X + i + 1] - psi[(j + 1)*X + i - 1]
+		uy[j*X + i] = (psi[(j + 1)*X + i + 1] - psi[(j + 1)*X + i - 1]
 			+ psi[(j - 1)*X + i + 1] - psi[(j - 1)*X + i - 1]) / (4 * h);
 	}
 
@@ -154,7 +156,7 @@ __global__ void _kernel_temp(int X, int Y, int x0, int len, double *Ux, double *
 	}
 }
 
-double *_UxDev = NULL, *_UyDev = NULL, *_UxnDev = NULL, *_UynDev = NULL, *wDev = NULL, *wnDev = NULL, *psiDev = NULL, *psinDev = NULL, *_TempDev=NULL, *_TempnDev;
+double *_UxDev = NULL, *_UyDev = NULL, *_UxnDev = NULL, *_UynDev = NULL, *wDev = NULL, *wnDev = NULL, *psiDev = NULL, *psinDev = NULL, *_TempDev = NULL, *_TempnDev;
 int *prDev = NULL;
 int _X, _Y;
 int _x0, _len;
@@ -184,7 +186,7 @@ double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::
 
 		_kernel_temp << <blocks, threads >> >(_X, _Y, _x0, _len, _UxDev, _UyDev, _TempDev, _TempnDev, _nuM, _h, _tau);
 		_kernel_pTemp << <blocks, threads >> >(_X, _Y, _x0, _len, _TempDev, _TempnDev);
-		//запуск ядер устройства
+		//находим поле вихря
 		kernel_gelmgolca << <blocks, threads >> >(_X, _Y, wDev, wnDev, psiDev,
 			_UxDev, _UyDev, _TempDev, _h, _tau, _nuM);
 		kernel_p << <blocks, threads >> >(_X, _Y, wDev, wnDev);
@@ -193,7 +195,7 @@ double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::
 		do {
 			flag = false;
 			//запуск ядер устройства
-			kernel_puasson << <blocks, threads >> >(_X, _Y, psiDev, wDev, psinDev, prDev, _h);
+			kernel_puasson << <blocks, threads >> >(_X, _Y, psiDev, wDev, prDev, _h,psinDev);
 			kernel_p << <blocks, threads >> >(_X, _Y, psiDev, psinDev);
 			//синхронизация устройства и хоста
 			cudaDeviceSynchronize();
@@ -208,7 +210,7 @@ double ComputeWPsi(ComputeOnCUDA::WPsi::HelmholtzCalcMethod hcm, ComputeOnCUDA::
 
 		} while (flag);
 
-		//запуск ядер устройства
+		//находим скорости
 		kernel_skorosti << <blocks, threads >> >(_X, _Y, psiDev, _UxDev, _UyDev, _h);
 		t += _tau;
 
@@ -253,7 +255,7 @@ void ConstructorWPsi(double tau,  double nuM, int x0, int len, double h, int X, 
 		if (i > x0 + len)
 			psi[i + (Y - 1)*X] = 0.0;
 		if ((i >= x0) && (i <= x0 + len))
-			psi[i + (Y - 1)*X] = psi[i + (Y - 1)*X + 1] + Uy[i + (Y - 1)*X] * h;
+			psi[i + (Y - 1)*X] = psi[i + (Y - 1)*X + 1] + fabs(Uy[i + (Y - 1)*X]) * h;
 		if (i < x0)
 			psi[i + (Y - 1)*X] = psi[i + (Y - 1)*X + 1];
 	}

@@ -17,10 +17,10 @@ namespace AirMix {
              }                
              h = Convert.ToDouble(tbH.Text);
              tau = Convert.ToDouble(tbTau.Text);
-             tmax = Convert.ToDouble(tbTimeMax.Text);
+             tmax = Convert.ToInt32(tbTimeMax.Text)*tau;
              scale = Convert.ToInt32(nudScale.Value);
              ro = Convert.ToDouble(tbRo.Text);
-             nuM = (rbMissingTurb.Checked) ? 1.0 : Convert.ToDouble(tbNuM.Text);
+             nuM =  Convert.ToDouble(tbNuM.Text);
 
              X = (int) (sizeX/h) + 1;
              Y = (int) (sizeY/h) + 1;
@@ -32,6 +32,7 @@ namespace AirMix {
 
              SetSpeeds(UxMax: Convert.ToDouble(tbUxMax.Text), UyMax: Convert.ToDouble(tbUyMax.Text));
              SetTemp(TMaxUx: Convert.ToDouble(tbTmaxUx.Text), TMaxUy: Convert.ToDouble(tbTmaxUy.Text));
+             
          }
          
          //Установка скоростей
@@ -61,6 +62,8 @@ namespace AirMix {
 
                  Uy[i, 0] = 0.0;
              }
+
+             lblRe.Text = Convert.ToString((Ux[X - 1, (Y - 1) / 2] / nuM *  Y).ToString("f1"));
          }
 
          //установка температуры

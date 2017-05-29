@@ -34,7 +34,6 @@ namespace AirMix {
             System.Windows.Forms.Label label7;
             System.Windows.Forms.Label label9;
             System.Windows.Forms.Label label10;
-            System.Windows.Forms.Label label11;
             System.Windows.Forms.Label label4;
             System.Windows.Forms.Label label3;
             System.Windows.Forms.Label label2;
@@ -42,9 +41,13 @@ namespace AirMix {
             System.Windows.Forms.Label label12;
             System.Windows.Forms.Label label14;
             System.Windows.Forms.Label label15;
+            System.Windows.Forms.Label label16;
+            System.Windows.Forms.Label label11;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.btnCalculate = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.lblRe = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.rbMissingTurb = new System.Windows.Forms.RadioButton();
             this.tbNuM = new System.Windows.Forms.TextBox();
             this.rbKE = new System.Windows.Forms.RadioButton();
@@ -60,16 +63,21 @@ namespace AirMix {
             this.rbHelmEquImpScheme = new System.Windows.Forms.RadioButton();
             this.rbHelmEquExpScheme = new System.Windows.Forms.RadioButton();
             this.gpInitVal = new System.Windows.Forms.GroupBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.tbTimeMax = new System.Windows.Forms.TextBox();
+            this.rbSetSpeeds = new System.Windows.Forms.RadioButton();
+            this.rbTimeSpeeds = new System.Windows.Forms.RadioButton();
             this.tbTau = new System.Windows.Forms.TextBox();
             this.tbH = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.gbOutput = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.сbGraphicsProcess = new System.Windows.Forms.CheckBox();
+            this.сbGraphicsResult = new System.Windows.Forms.CheckBox();
+            this.nudScale = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
             this.rbTemp = new System.Windows.Forms.RadioButton();
             this.rbSpeeds = new System.Windows.Forms.RadioButton();
-            this.label8 = new System.Windows.Forms.Label();
-            this.cbGraphics = new System.Windows.Forms.CheckBox();
-            this.nudScale = new System.Windows.Forms.NumericUpDown();
             this.cbTextFile = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rbWPsi = new System.Windows.Forms.RadioButton();
@@ -108,7 +116,6 @@ namespace AirMix {
             label7 = new System.Windows.Forms.Label();
             label9 = new System.Windows.Forms.Label();
             label10 = new System.Windows.Forms.Label();
-            label11 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
@@ -116,12 +123,16 @@ namespace AirMix {
             label12 = new System.Windows.Forms.Label();
             label14 = new System.Windows.Forms.Label();
             label15 = new System.Windows.Forms.Label();
+            label16 = new System.Windows.Forms.Label();
+            label11 = new System.Windows.Forms.Label();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.gpInitVal.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.gbOutput.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudScale)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.gbPU.SuspendLayout();
@@ -139,7 +150,8 @@ namespace AirMix {
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(36, 116);
+            label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            label5.Location = new System.Drawing.Point(36, 48);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(95, 17);
             label5.TabIndex = 9;
@@ -148,7 +160,8 @@ namespace AirMix {
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(10, 38);
+            label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            label6.Location = new System.Drawing.Point(10, 23);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(126, 17);
             label6.TabIndex = 11;
@@ -157,38 +170,30 @@ namespace AirMix {
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(23, 77);
+            label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            label7.Location = new System.Drawing.Point(24, 61);
             label7.Name = "label7";
-            label7.Size = new System.Drawing.Size(108, 17);
+            label7.Size = new System.Drawing.Size(92, 17);
             label7.TabIndex = 13;
-            label7.Text = "Время расчета";
+            label7.Text = "Число шагов";
             // 
             // label9
             // 
             label9.AutoSize = true;
             label9.Location = new System.Drawing.Point(532, 26);
             label9.Name = "label9";
-            label9.Size = new System.Drawing.Size(0, 17);
+            label9.Size = new System.Drawing.Size(0, 20);
             label9.TabIndex = 15;
             // 
             // label10
             // 
             label10.AutoSize = true;
             label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            label10.Location = new System.Drawing.Point(4, 76);
+            label10.Location = new System.Drawing.Point(4, 73);
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(167, 17);
             label10.TabIndex = 17;
             label10.Text = "Молекулярная вязкость";
-            // 
-            // label11
-            // 
-            label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(9, 78);
-            label11.Name = "label11";
-            label11.Size = new System.Drawing.Size(78, 17);
-            label11.TabIndex = 21;
-            label11.Text = "Плотность";
             // 
             // label4
             // 
@@ -229,7 +234,7 @@ namespace AirMix {
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new System.Drawing.Point(6, 109);
+            label12.Location = new System.Drawing.Point(6, 102);
             label12.Name = "label12";
             label12.Size = new System.Drawing.Size(139, 17);
             label12.TabIndex = 17;
@@ -253,6 +258,25 @@ namespace AirMix {
             label15.TabIndex = 34;
             label15.Text = "Температура потока слева";
             // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            label16.Location = new System.Drawing.Point(4, 99);
+            label16.Name = "label16";
+            label16.Size = new System.Drawing.Size(170, 17);
+            label16.TabIndex = 19;
+            label16.Text = "Число Рейнольдса Re = ";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new System.Drawing.Point(9, 78);
+            label11.Name = "label11";
+            label11.Size = new System.Drawing.Size(133, 17);
+            label11.TabIndex = 21;
+            label11.Text = "Плотность воздуха";
+            // 
             // btnCalculate
             // 
             this.btnCalculate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -266,18 +290,39 @@ namespace AirMix {
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.lblRe);
+            this.groupBox5.Controls.Add(this.label17);
+            this.groupBox5.Controls.Add(label16);
             this.groupBox5.Controls.Add(this.rbMissingTurb);
             this.groupBox5.Controls.Add(label10);
             this.groupBox5.Controls.Add(this.tbNuM);
             this.groupBox5.Controls.Add(this.rbKE);
             this.groupBox5.Controls.Add(this.rbSecundova);
             this.groupBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox5.Location = new System.Drawing.Point(292, 165);
+            this.groupBox5.Location = new System.Drawing.Point(292, 149);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(259, 103);
+            this.groupBox5.Size = new System.Drawing.Size(259, 129);
             this.groupBox5.TabIndex = 9;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Модель турбулентности";
+            // 
+            // lblRe
+            // 
+            this.lblRe.AutoSize = true;
+            this.lblRe.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblRe.Location = new System.Drawing.Point(169, 100);
+            this.lblRe.Name = "lblRe";
+            this.lblRe.Size = new System.Drawing.Size(23, 17);
+            this.lblRe.TabIndex = 21;
+            this.lblRe.Text = "...";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(145, 98);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(0, 17);
+            this.label17.TabIndex = 20;
             // 
             // rbMissingTurb
             // 
@@ -295,13 +340,12 @@ namespace AirMix {
             // 
             // tbNuM
             // 
-            this.tbNuM.Enabled = false;
             this.tbNuM.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbNuM.Location = new System.Drawing.Point(177, 76);
+            this.tbNuM.Location = new System.Drawing.Point(177, 73);
             this.tbNuM.Name = "tbNuM";
             this.tbNuM.Size = new System.Drawing.Size(71, 22);
             this.tbNuM.TabIndex = 16;
-            this.tbNuM.Text = "0.0000151";
+            this.tbNuM.Text = "1.0";
             // 
             // rbKE
             // 
@@ -333,7 +377,7 @@ namespace AirMix {
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox4.Location = new System.Drawing.Point(6, 131);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(251, 84);
+            this.groupBox4.Size = new System.Drawing.Size(251, 95);
             this.groupBox4.TabIndex = 9;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Метод решения ур. Навье-Стокса";
@@ -341,7 +385,6 @@ namespace AirMix {
             // rbNSEquImpScheme
             // 
             this.rbNSEquImpScheme.AutoSize = true;
-            this.rbNSEquImpScheme.Enabled = false;
             this.rbNSEquImpScheme.Location = new System.Drawing.Point(6, 48);
             this.rbNSEquImpScheme.Name = "rbNSEquImpScheme";
             this.rbNSEquImpScheme.Size = new System.Drawing.Size(126, 21);
@@ -404,11 +447,11 @@ namespace AirMix {
             // 
             // tbRo
             // 
-            this.tbRo.Location = new System.Drawing.Point(98, 75);
+            this.tbRo.Location = new System.Drawing.Point(148, 77);
             this.tbRo.Name = "tbRo";
             this.tbRo.Size = new System.Drawing.Size(43, 22);
             this.tbRo.TabIndex = 20;
-            this.tbRo.Text = "1.0";
+            this.tbRo.Text = "1.3";
             // 
             // groupBox7
             // 
@@ -417,7 +460,7 @@ namespace AirMix {
             this.groupBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox7.Location = new System.Drawing.Point(7, 15);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(241, 82);
+            this.groupBox7.Size = new System.Drawing.Size(241, 75);
             this.groupBox7.TabIndex = 10;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Метод решения ур. Гельмгольца";
@@ -450,31 +493,72 @@ namespace AirMix {
             // 
             // gpInitVal
             // 
+            this.gpInitVal.Controls.Add(this.groupBox8);
             this.gpInitVal.Controls.Add(label9);
-            this.gpInitVal.Controls.Add(label7);
-            this.gpInitVal.Controls.Add(this.tbTimeMax);
             this.gpInitVal.Controls.Add(label6);
             this.gpInitVal.Controls.Add(this.tbTau);
             this.gpInitVal.Controls.Add(label5);
             this.gpInitVal.Controls.Add(this.tbH);
+            this.gpInitVal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.gpInitVal.Location = new System.Drawing.Point(6, 6);
             this.gpInitVal.Name = "gpInitVal";
-            this.gpInitVal.Size = new System.Drawing.Size(226, 162);
+            this.gpInitVal.Size = new System.Drawing.Size(841, 162);
             this.gpInitVal.TabIndex = 2;
             this.gpInitVal.TabStop = false;
             this.gpInitVal.Text = "Начальные условия";
             // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.tbTimeMax);
+            this.groupBox8.Controls.Add(this.rbSetSpeeds);
+            this.groupBox8.Controls.Add(this.rbTimeSpeeds);
+            this.groupBox8.Controls.Add(label7);
+            this.groupBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox8.Location = new System.Drawing.Point(6, 71);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(214, 85);
+            this.groupBox8.TabIndex = 18;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Условие окончания расчета";
+            // 
             // tbTimeMax
             // 
-            this.tbTimeMax.Location = new System.Drawing.Point(142, 76);
+            this.tbTimeMax.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbTimeMax.Location = new System.Drawing.Point(118, 59);
             this.tbTimeMax.Name = "tbTimeMax";
             this.tbTimeMax.Size = new System.Drawing.Size(43, 22);
             this.tbTimeMax.TabIndex = 12;
-            this.tbTimeMax.Text = "1.0";
+            this.tbTimeMax.Text = "1000";
+            // 
+            // rbSetSpeeds
+            // 
+            this.rbSetSpeeds.AutoSize = true;
+            this.rbSetSpeeds.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbSetSpeeds.Location = new System.Drawing.Point(6, 18);
+            this.rbSetSpeeds.Name = "rbSetSpeeds";
+            this.rbSetSpeeds.Size = new System.Drawing.Size(208, 21);
+            this.rbSetSpeeds.TabIndex = 16;
+            this.rbSetSpeeds.Text = "До установления скорости";
+            this.rbSetSpeeds.UseVisualStyleBackColor = true;
+            // 
+            // rbTimeSpeeds
+            // 
+            this.rbTimeSpeeds.AutoSize = true;
+            this.rbTimeSpeeds.Checked = true;
+            this.rbTimeSpeeds.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbTimeSpeeds.Location = new System.Drawing.Point(5, 40);
+            this.rbTimeSpeeds.Name = "rbTimeSpeeds";
+            this.rbTimeSpeeds.Size = new System.Drawing.Size(210, 21);
+            this.rbTimeSpeeds.TabIndex = 17;
+            this.rbTimeSpeeds.TabStop = true;
+            this.rbTimeSpeeds.Text = "По числу шагог по времени";
+            this.rbTimeSpeeds.UseVisualStyleBackColor = true;
+            this.rbTimeSpeeds.CheckedChanged += new System.EventHandler(this.rbTimeSpeeds_CheckedChanged);
             // 
             // tbTau
             // 
-            this.tbTau.Location = new System.Drawing.Point(142, 38);
+            this.tbTau.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbTau.Location = new System.Drawing.Point(142, 21);
             this.tbTau.Name = "tbTau";
             this.tbTau.Size = new System.Drawing.Size(43, 22);
             this.tbTau.TabIndex = 10;
@@ -482,7 +566,8 @@ namespace AirMix {
             // 
             // tbH
             // 
-            this.tbH.Location = new System.Drawing.Point(142, 116);
+            this.tbH.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbH.Location = new System.Drawing.Point(142, 49);
             this.tbH.Name = "tbH";
             this.tbH.Size = new System.Drawing.Size(43, 22);
             this.tbH.TabIndex = 8;
@@ -502,19 +587,87 @@ namespace AirMix {
             // 
             // gbOutput
             // 
+            this.gbOutput.Controls.Add(this.groupBox1);
             this.gbOutput.Controls.Add(this.rbTemp);
             this.gbOutput.Controls.Add(this.rbSpeeds);
-            this.gbOutput.Controls.Add(this.label8);
-            this.gbOutput.Controls.Add(this.cbGraphics);
-            this.gbOutput.Controls.Add(this.nudScale);
             this.gbOutput.Controls.Add(this.cbTextFile);
             this.gbOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.gbOutput.Location = new System.Drawing.Point(578, 221);
             this.gbOutput.Name = "gbOutput";
-            this.gbOutput.Size = new System.Drawing.Size(290, 133);
+            this.gbOutput.Size = new System.Drawing.Size(290, 137);
             this.gbOutput.TabIndex = 4;
             this.gbOutput.TabStop = false;
             this.gbOutput.Text = "Вывод результатов";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.сbGraphicsProcess);
+            this.groupBox1.Controls.Add(this.сbGraphicsResult);
+            this.groupBox1.Controls.Add(this.nudScale);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox1.Location = new System.Drawing.Point(6, 77);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(280, 53);
+            this.groupBox1.TabIndex = 21;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "В графическом виде";
+            // 
+            // сbGraphicsProcess
+            // 
+            this.сbGraphicsProcess.AutoSize = true;
+            this.сbGraphicsProcess.Location = new System.Drawing.Point(109, 28);
+            this.сbGraphicsProcess.Name = "сbGraphicsProcess";
+            this.сbGraphicsProcess.Size = new System.Drawing.Size(86, 21);
+            this.сbGraphicsProcess.TabIndex = 7;
+            this.сbGraphicsProcess.Text = "Процесс";
+            this.сbGraphicsProcess.UseVisualStyleBackColor = true;
+            this.сbGraphicsProcess.CheckedChanged += new System.EventHandler(this.сbGraphicsProcess_CheckedChanged);
+            // 
+            // сbGraphicsResult
+            // 
+            this.сbGraphicsResult.AutoSize = true;
+            this.сbGraphicsResult.Location = new System.Drawing.Point(7, 28);
+            this.сbGraphicsResult.Name = "сbGraphicsResult";
+            this.сbGraphicsResult.Size = new System.Drawing.Size(98, 21);
+            this.сbGraphicsResult.TabIndex = 6;
+            this.сbGraphicsResult.Text = "Результат";
+            this.сbGraphicsResult.UseVisualStyleBackColor = true;
+            this.сbGraphicsResult.CheckedChanged += new System.EventHandler(this.сbGraphicsResult_CheckedChanged);
+            // 
+            // nudScale
+            // 
+            this.nudScale.Enabled = false;
+            this.nudScale.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.nudScale.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.nudScale.Location = new System.Drawing.Point(234, 9);
+            this.nudScale.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudScale.Name = "nudScale";
+            this.nudScale.Size = new System.Drawing.Size(42, 22);
+            this.nudScale.TabIndex = 2;
+            this.nudScale.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label8.Location = new System.Drawing.Point(151, 11);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(84, 17);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "Масштаб %";
             // 
             // rbTemp
             // 
@@ -540,57 +693,12 @@ namespace AirMix {
             this.rbSpeeds.Text = "Поле скоростей";
             this.rbSpeeds.UseVisualStyleBackColor = true;
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label8.Location = new System.Drawing.Point(133, 106);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(94, 17);
-            this.label8.TabIndex = 3;
-            this.label8.Text = "Масштаб (%)";
-            // 
-            // cbGraphics
-            // 
-            this.cbGraphics.AutoSize = true;
-            this.cbGraphics.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cbGraphics.Location = new System.Drawing.Point(6, 56);
-            this.cbGraphics.Name = "cbGraphics";
-            this.cbGraphics.Size = new System.Drawing.Size(165, 21);
-            this.cbGraphics.TabIndex = 1;
-            this.cbGraphics.Text = "В графическом виде";
-            this.cbGraphics.UseVisualStyleBackColor = true;
-            this.cbGraphics.CheckedChanged += new System.EventHandler(this.cbGraphics_CheckedChanged);
-            // 
-            // nudScale
-            // 
-            this.nudScale.Enabled = false;
-            this.nudScale.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.nudScale.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.nudScale.Location = new System.Drawing.Point(228, 105);
-            this.nudScale.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudScale.Name = "nudScale";
-            this.nudScale.Size = new System.Drawing.Size(56, 22);
-            this.nudScale.TabIndex = 2;
-            this.nudScale.Value = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            // 
             // cbTextFile
             // 
             this.cbTextFile.AutoSize = true;
+            this.cbTextFile.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbTextFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cbTextFile.Location = new System.Drawing.Point(6, 83);
+            this.cbTextFile.Location = new System.Drawing.Point(11, 52);
             this.cbTextFile.Name = "cbTextFile";
             this.cbTextFile.Size = new System.Drawing.Size(146, 21);
             this.cbTextFile.TabIndex = 0;
@@ -647,7 +755,7 @@ namespace AirMix {
             this.gbPU.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.gbPU.Location = new System.Drawing.Point(10, 46);
             this.gbPU.Name = "gbPU";
-            this.gbPU.Size = new System.Drawing.Size(270, 221);
+            this.gbPU.Size = new System.Drawing.Size(270, 232);
             this.gbPU.TabIndex = 0;
             this.gbPU.TabStop = false;
             // 
@@ -658,7 +766,7 @@ namespace AirMix {
             this.gbWPsi.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.gbWPsi.Location = new System.Drawing.Point(292, 47);
             this.gbWPsi.Name = "gbWPsi";
-            this.gbWPsi.Size = new System.Drawing.Size(259, 112);
+            this.gbWPsi.Size = new System.Drawing.Size(259, 96);
             this.gbWPsi.TabIndex = 1;
             this.gbWPsi.TabStop = false;
             // 
@@ -717,7 +825,7 @@ namespace AirMix {
             // 
             this.rbModeling.AutoSize = true;
             this.rbModeling.Checked = true;
-            this.rbModeling.Location = new System.Drawing.Point(320, 6);
+            this.rbModeling.Location = new System.Drawing.Point(320, 21);
             this.rbModeling.Name = "rbModeling";
             this.rbModeling.Size = new System.Drawing.Size(135, 21);
             this.rbModeling.TabIndex = 12;
@@ -732,7 +840,7 @@ namespace AirMix {
             this.gbModeling.Controls.Add(this.rbCUDA);
             this.gbModeling.Location = new System.Drawing.Point(248, 37);
             this.gbModeling.Name = "gbModeling";
-            this.gbModeling.Size = new System.Drawing.Size(257, 131);
+            this.gbModeling.Size = new System.Drawing.Size(257, 125);
             this.gbModeling.TabIndex = 11;
             this.gbModeling.TabStop = false;
             this.gbModeling.Text = "Система расчета";
@@ -755,9 +863,9 @@ namespace AirMix {
             this.gbStressTesting.Controls.Add(this.cbOpenMP);
             this.gbStressTesting.Controls.Add(this.cbSeq);
             this.gbStressTesting.Enabled = false;
-            this.gbStressTesting.Location = new System.Drawing.Point(519, 34);
+            this.gbStressTesting.Location = new System.Drawing.Point(519, 37);
             this.gbStressTesting.Name = "gbStressTesting";
-            this.gbStressTesting.Size = new System.Drawing.Size(325, 134);
+            this.gbStressTesting.Size = new System.Drawing.Size(322, 125);
             this.gbStressTesting.TabIndex = 10;
             this.gbStressTesting.TabStop = false;
             this.gbStressTesting.Text = "Параметры";
@@ -765,7 +873,7 @@ namespace AirMix {
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(8, 85);
+            this.label13.Location = new System.Drawing.Point(8, 78);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(260, 17);
             this.label13.TabIndex = 19;
@@ -774,7 +882,7 @@ namespace AirMix {
             // nudStressTesting
             // 
             this.nudStressTesting.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.nudStressTesting.Location = new System.Drawing.Point(147, 107);
+            this.nudStressTesting.Location = new System.Drawing.Point(147, 100);
             this.nudStressTesting.Maximum = new decimal(new int[] {
             20,
             0,
@@ -797,7 +905,7 @@ namespace AirMix {
             // cbCUDA
             // 
             this.cbCUDA.AutoSize = true;
-            this.cbCUDA.Location = new System.Drawing.Point(101, 58);
+            this.cbCUDA.Location = new System.Drawing.Point(101, 51);
             this.cbCUDA.Name = "cbCUDA";
             this.cbCUDA.Size = new System.Drawing.Size(68, 21);
             this.cbCUDA.TabIndex = 2;
@@ -807,7 +915,7 @@ namespace AirMix {
             // cbOpenMP
             // 
             this.cbOpenMP.AutoSize = true;
-            this.cbOpenMP.Location = new System.Drawing.Point(10, 57);
+            this.cbOpenMP.Location = new System.Drawing.Point(10, 50);
             this.cbOpenMP.Name = "cbOpenMP";
             this.cbOpenMP.Size = new System.Drawing.Size(85, 21);
             this.cbOpenMP.TabIndex = 1;
@@ -829,7 +937,7 @@ namespace AirMix {
             // rbStressTesting
             // 
             this.rbStressTesting.AutoSize = true;
-            this.rbStressTesting.Location = new System.Drawing.Point(577, 6);
+            this.rbStressTesting.Location = new System.Drawing.Point(577, 17);
             this.rbStressTesting.Name = "rbStressTesting";
             this.rbStressTesting.Size = new System.Drawing.Size(210, 21);
             this.rbStressTesting.TabIndex = 9;
@@ -957,7 +1065,7 @@ namespace AirMix {
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(874, 519);
+            this.ClientSize = new System.Drawing.Size(875, 519);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox2);
@@ -978,8 +1086,12 @@ namespace AirMix {
             this.groupBox7.PerformLayout();
             this.gpInitVal.ResumeLayout(false);
             this.gpInitVal.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.gbOutput.ResumeLayout(false);
             this.gbOutput.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudScale)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -1011,7 +1123,6 @@ namespace AirMix {
         private TextBox tbH;
         private Button btnCancel;
         private GroupBox gbOutput;
-        private CheckBox cbGraphics;
         private CheckBox cbTextFile;
         private GroupBox groupBox2;
         private GroupBox groupBox3;
@@ -1029,7 +1140,6 @@ namespace AirMix {
         private RadioButton rbSeq;
         private RadioButton rbOpenMP;
         private TextBox tbNuM;
-        private TextBox tbRo;
         private RadioButton rbMissingTurb;
         private GroupBox groupBox7;
         private RadioButton rbHelmEquImpScheme;
@@ -1064,6 +1174,15 @@ namespace AirMix {
         public TextBox tbTmaxUx;
         private RadioButton rbTemp;
         private RadioButton rbSpeeds;
+        private Label lblRe;
+        private Label label17;
+        private TextBox tbRo;
+        private GroupBox groupBox1;
+        private CheckBox сbGraphicsProcess;
+        private CheckBox сbGraphicsResult;
+        private GroupBox groupBox8;
+        private RadioButton rbSetSpeeds;
+        private RadioButton rbTimeSpeeds;
     }
 }
 

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using AirMix.Grafics;
 
 namespace AirMix {
@@ -33,7 +34,7 @@ namespace AirMix {
             bgw.RunWorkerAsync();
 
             //вывод скоростей графическом виде       
-            if (cbGraphics.Checked) {
+            if (сbGraphicsProcess.Checked) {
                     grForm = new GraphicsForm(X, Y, x0,len,rbSpeeds.Checked, rbTemp.Checked, scale: scale);
                     grForm.Show();
                     grForm.Closing += grForm_Closing;                  
@@ -43,13 +44,18 @@ namespace AirMix {
 
             //пока идет расчет
             while (bgw.IsBusy) {
-                //вывод графики
-                if (cbGraphics.Checked) {
+                //вывод графики в процессе
+                if (сbGraphicsProcess.Checked) {
                     error = grForm.DrawDisplay(Ux, Uy, Temp);
                     if (error) {
                         bgw.CancelAsync();
                     }                 
-                }          
+                }
+                //если расчет до установления
+                if (rbSetSpeeds.Checked) {
+                     pgb.Style = ProgressBarStyle.Marquee;
+                     lblPrc.Text = "Расчеты выполняются ...";
+                }
                 Application.DoEvents();
             }
 
@@ -62,6 +68,14 @@ namespace AirMix {
                 if (rbTemp.Checked)
                     outForm.OutTemp(Temp);
             }
+
+      
+            //вывод результатов графики
+            if (сbGraphicsResult.Checked) {
+                grForm = new GraphicsForm(X, Y, x0, len, rbSpeeds.Checked, rbTemp.Checked, scale: scale);
+                grForm.Show();
+                grForm.DrawDisplay(Ux, Uy, Temp);
+            }              
 
             //освобождение ресурсов, если были использованы параллельные вычисления
             if (rbPU.Checked) {
@@ -81,16 +95,28 @@ namespace AirMix {
         private void CalculationSeq(object sender, DoWorkEventArgs e) {
             BackgroundWorker bw = sender as BackgroundWorker;
             double t = 0;
+            double [,] Utmp = new double[X,Y];
+            const double procU = 0.03;
+            bool flag;
+            bool FLAG;
 
             do {
-                t += tau;
-                //состояние расчета
-                bw.ReportProgress((int)(t / tmax * 100));
-
                 //если произведена отмена
                 if (bw.CancellationPending) {
                     e.Cancel = true;
                     return;
+                }
+           
+                 //если расчет до установления
+                if (rbSetSpeeds.Checked) {
+                    for (int i = 1; i < X - 1; i++)
+                        for (int j = 1; j < Y - 1; j++)
+                            Utmp[i, j] = Ux[i, j] + Uy[i, j];
+                }
+                else {
+                    t += tau;
+                    //состояние расчета
+                    bw.ReportProgress((int) (t / tmax * 100));
                 }
 
                 //расчет в системе "давление - скорость"
@@ -105,10 +131,24 @@ namespace AirMix {
                         (AirMixSequential.TurbulenceModel)turbulenceModel, 0.0);
 
                //чтобы графика замедлялась
-               if (cbGraphics.Checked)
+               if (сbGraphicsProcess.Checked)
                     Thread.Sleep(10);
 
-            } while (t < tmax);
+                //если расчет до установления
+                if (rbSetSpeeds.Checked) {
+                    flag = false;
+                    for (int i = 1; i < X - 1; i++)
+                        for (int j = 1; j < Y - 1; j++) {
+                            if (Math.Abs(Utmp[i, j]-(Ux[i, j] + Uy[i, j]))/Math.Abs(Ux[i, j] + Uy[i, j])*100.0 > procU)
+                                flag = true;
+                        }
+                    FLAG = flag;
+                }
+                else {
+                    FLAG = t < tmax;
+                }
+
+            } while (FLAG);
         }
 
 
@@ -119,6 +159,10 @@ namespace AirMix {
             double[] Ux1d = new double[X * Y];
             double[] Uy1d = new double[X * Y];
             double[] Temp1d = new double[X * Y];
+            double[,] Utmp = new double[X, Y];
+            const double procU = 0.03;
+            bool flag;
+            bool FLAG;
 
             do {
                 //создание одномерных массивов для параллельных вычислений
@@ -129,14 +173,22 @@ namespace AirMix {
                         Temp1d[j * X + i] = Temp[i, j];
                     }
 
-                t += tau;
-                //состояние расчета
-                bw.ReportProgress((int)(t / tmax * 100));
-
                 //если произведена отмена
                 if (bw.CancellationPending) {
                     e.Cancel = true;
                     return;
+                }
+
+                //если расчет до установления
+                if (rbSetSpeeds.Checked) {
+                    for (int i = 1; i < X - 1; i++)
+                        for (int j = 1; j < Y - 1; j++)
+                            Utmp[i, j] = Ux[i, j] + Uy[i, j];
+                }
+                else {
+                    t += tau;
+                    //состояние расчета
+                    bw.ReportProgress((int)(t / tmax * 100));
                 }
 
                 //расчет в системе "давление - скорость"
@@ -155,7 +207,7 @@ namespace AirMix {
                 }
 
                 //чтобы графика замедлялась
-                if (cbGraphics.Checked)
+                if (сbGraphicsProcess.Checked)
                     Thread.Sleep(10);
 
                 //копирование данных из парралельных вычислений
@@ -166,7 +218,21 @@ namespace AirMix {
                         Temp[i, j] = Temp1d[j * X + i];
                     }
 
-            } while (t <= tmax);
+                //если расчет до установления
+                if (rbSetSpeeds.Checked) {
+                    flag = false;
+                    for (int i = 1; i < X - 1; i++)
+                        for (int j = 1; j < Y - 1; j++) {
+                            if (Math.Abs(Utmp[i, j] - (Ux[i, j] + Uy[i, j])) / Math.Abs(Ux[i, j] + Uy[i, j]) * 100.0 > procU)
+                                flag = true;
+                        }
+                    FLAG = flag;
+                }
+                else {
+                    FLAG = t < tmax;
+                }
+
+            } while (FLAG);
         }
     }
 }
